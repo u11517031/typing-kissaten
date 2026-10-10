@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>昭和字律：視覺效果雛形 (Interactive Prototype)</title>
+    <style>
+        :root {
+            --bg-color: #f4ece1;
+            --main-color: #8c2d19;
+            --accent-color: #d99b26;
+            --text-color: #362212;
+            --card-bg: #fff8f0;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { color: var(--main-color); margin-bottom: 5px; }
+
+        .game-container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border: 3px solid var(--main-color);
+            border-radius: 16px;
+            box-shadow: 6px 6px 0px var(--main-color);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn {
+            flex: 1; padding: 12px; border: 2px solid var(--main-color);
+            background: var(--bg-color); color: var(--text-color);
+            font-weight: bold; cursor: pointer; border-radius: 8px;
+        }
+        .tab-btn.active { background: var(--main-color); color: white; }
+
+        .game-panel { display: none; flex-direction: column; align-items: center; }
+        .game-panel.active { display: flex; }
+
+        /* --- 經營模式：動態飲料杯 --- */
+        .cafe-stage { width: 100%; text-align: center; }
+        .speech-bubble {
+            background: #e8d8c8; border-radius: 12px; padding: 12px;
+            font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; border: 2px solid var(--main-color);
+        }
+
+        .glass-container {
+            width: 80px; height: 130px; border: 4px solid var(--main-color);
+            border-top: none; border-radius: 0 0 20px 20px; margin: 0 auto 15px auto;
+            position: relative; background: rgba(255, 255, 255, 0.6); overflow: hidden;
+        }
+
+        .syrup {
+            position: absolute; bottom: 0; width: 100%; height: 0%;
+            background: #2e7d32; transition: height 0.3s ease;
+        }
+
+        .soda {
+            position: absolute; bottom: 0; width: 100%; height: 0%;
+            background: rgba(144, 238, 144, 0.7); transition: height 0.3s ease;
+        }
+
+        .cherry {
+            position: absolute; top: 10px; left: 50%; transform: translateX(-50%) scale(0);
+            width: 20px; height: 20px; background: #d32f2f; border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .cherry::after {
+            content: ''; position: absolute; top: -8px; left: 8px;
+            width: 2px; height: 10px; background: #555; transform: rotate(20deg);
+        }
+
+        .target-word { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; }
+        .matched { color: #2e7d32; text-decoration: underline; }
+        .unmatched { color: #888; }
+
+        /* 指法引導鍵盤 */
+        .keyboard-guide {
+            display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px;
+            width: 100%; max-width: 450px; margin-top: 15px;
+        }
+        .key {
+            padding: 8px 0; background: #e8d8c8; border: 1px solid var(--main-color);
+            border-radius: 4px; font-size: 0.8rem; font-weight: bold; text-align: center;
+        }
+        .key.active { background: var(--accent-color); color: white; transform: scale(1.1); }
+
+        /* --- 音遊模式：軌道與黑膠 --- */
+        .vinyl-record {
+            width: 80px; height: 80px; background: #111; border-radius: 50%;
+            border: 4px solid var(--accent-color); display: flex; align-items: center; justify-content: center;
+            animation: spin 2s linear infinite paused; margin-bottom: 10px;
+        }
+        .vinyl-record.playing { animation-play-state: running; }
+        .vinyl-center { width: 25px; height: 25px; background: var(--main-color); border-radius: 50%; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .rhythm-track {
+            width: 100%; height: 220px; background: #222; border-radius: 12px;
+            position: relative; overflow: hidden; border: 2px solid var(--main-color);
+        }
+
+        .hit-line {
+            position: absolute; bottom: 30px; width: 100%; height: 4px;
+            background: var(--accent-color); box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .note {
+            position: absolute; width: 40px; height: 40px; background: #fff;
+            border: 2px solid var(--main-color); border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-weight: bold;
+            font-size: 1.2rem; color: var(--main-color); top: -50px; left: calc(50% - 20px);
+        }
+
+        /* 絢麗打擊效果 */
+        .sparkle {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, #fff, var(--accent-color), transparent);
+            pointer-events: none; opacity: 0; transition: opacity 0.2s, transform 0.2s;
+        }
+        .sparkle.active { opacity: 1; transform: translateX(-50%) scale(1.5); }
+    </style>
+</head>
+<body>
+
+    <h1>☕ 昭和字律：視覺效果雛形</h1>
+
+    <div class="game-container">
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchMode('cafe')">🍮 經營：飲料製作動畫</button>
+            <button class="tab-btn" onclick="switchMode('music')">🎷 音遊：落下的黑膠音符</button>
+        </div>
+
+        <!-- 1. 經營畫面 -->
+        <div id="cafe-panel" class="game-panel active">
+            <div class="speech-bubble">👤 客人：「I would like a Melon Soda, please.」</div>
+            
+            <!-- 動態飲料杯 -->
+            <div class="glass-container">
+                <div class="syrup" id="syrup"></div>
+                <div class="soda" id="soda"></div>
+                <div class="cherry" id="cherry"></div>
+            </div>
+
+            <div class="target-word" id="cafe-target"></div>
+            <p><small>請直接使用鍵盤輸入上方字母：</small></p>
+
+            <!-- 指法引導虛擬鍵盤 -->
+            <div class="keyboard-guide" id="keyboard">
+                <!-- 由 JS 動態生成按鍵 -->
+            </div>
+        </div>
+
+        <!-- 2. 音遊畫面 -->
+        <div id="music-panel" class="game-panel">
+            <div class="vinyl-record" id="vinyl">
+                <div class="vinyl-center"></div>
+            </div>
+            <div>🎵 歌曲：Plastic Love</div>
+
+            <div class="rhythm-track">
+                <div class="hit-line"></div>
+                <div class="note" id="falling-note">A</div>
+                <div class="sparkle" id="sparkle"></div>
+            </div>
+            <p><small>當字母到達黃色判定線時，按對應按鍵！</small></p>
+        </div>
+    </div>
+
+    <script>
+        // --- 經營模式邏輯 ---
+        const targetText = "MelonSoda";
+        let currentIndex = 0;
+
+        const keys = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M"];
+        
+        function initKeyboard() {
+            const kb = document.getElementById('keyboard');
+            kb.innerHTML = '';
+            keys.forEach(k => {
+                const keyDiv = document.createElement('div');
+                keyDiv.className = 'key';
+                keyDiv.id = `key-${k.toUpperCase()}`;
+                keyDiv.innerText = k;
+                kb.appendChild(keyDiv);
+            });
+        }
+
+        function updateCafeUI() {
+            const matched = targetText.substring(0, currentIndex);
+            const unmatched = targetText.substring(currentIndex);
+            document.getElementById('cafe-target').innerHTML = 
+                `<span class="matched">${matched}</span><span class="unmatched">${unmatched}</span>`;
+
+            // 更新杯子動畫（進度計算）
+            const progress = currentIndex / targetText.length;
+            document.getElementById('syrup').style.height = `${Math.min(progress * 100, 30)}%`;
+            document.getElementById('soda').style.height = `${Math.min(progress * 100, 85)}%`;
+            
+            if (currentIndex === targetText.length) {
+                document.getElementById('cherry').style.transform = "translateX(-50%) scale(1)";
+            } else {
+                document.getElementById('cherry').style.transform = "translateX(-50%) scale(0)";
+            }
+
+            // 高亮指法鍵盤下一個目標字母
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+            if (currentIndex < targetText.length) {
+                const nextChar = targetText[currentIndex].toUpperCase();
+                const activeKey = document.getElementById(`key-${nextChar}`);
+                if (activeKey) activeKey.classList.add('active');
+            }
+        }
+
+        // --- 音遊模式邏輯 ---
+        let notePos = -50;
+        let noteAnim = null;
+        let currentNoteChar = "A";
+
+        function startRhythm() {
+            document.getElementById('vinyl').classList.add('playing');
+            function loop() {
+                notePos += 2;
+                if (notePos > 220) {
+                    notePos = -50;
+                    currentNoteChar = keys[Math.floor(Math.random() * keys.length)];
+                    document.getElementById('falling-note').innerText = currentNoteChar;
+                }
+                document.getElementById('falling-note').style.top = `${notePos}px`;
+                noteAnim = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        function triggerSparkle() {
+            const sparkle = document.getElementById('sparkle');
+            sparkle.classList.add('active');
+            setTimeout(() => sparkle.classList.remove('active'), 200);
+        }
+
+        // 全局鍵盤事件
+        window.addEventListener('keydown', (e) => {
+            const pressedKey = e.key.toUpperCase();
+
+            // 經營模式輸入
+            if (document.getElementById('cafe-panel').classList.contains('active')) {
+                if (currentIndex < targetText.length && pressedKey === targetText[currentIndex].toUpperCase()) {
+                    currentIndex++;
+                    updateCafeUI();
+                }
+            } 
+            // 音遊模式輸入
+            else {
+                if (pressedKey === currentNoteChar && notePos >= 140 && notePos <= 190) {
+                    triggerSparkle();
+                    notePos = -50; // 重置音符
+                    currentNoteChar = keys[Math.floor(Math.random() * keys.length)];
+                    document.getElementById('falling-note').innerText = currentNoteChar;
+                }
+            }
+        });
+
+        function switchMode(mode) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
+
+            if (mode === 'cafe') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('cafe-panel').classList.add('active');
+                cancelAnimationFrame(noteAnim);
+                document.getElementById('vinyl').classList.remove('playing');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('music-panel').classList.add('active');
+                startRhythm();
+            }
+        }
+
+        // 初始化
+        initKeyboard();
+        updateCafeUI();
+    </script>
+</body>
+</html>
