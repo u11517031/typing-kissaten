@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>昭和字律：版本變更紀錄 (Changelog)</title>
+    <title>昭和字律：版本歷程展示門戶 (Version Portal)</title>
     <style>
         :root {
             --bg-color: #f4ece1;
@@ -26,7 +26,7 @@
 
         .container {
             width: 100%;
-            max-width: 700px;
+            max-width: 750px;
             background: var(--card-bg);
             border: 3px solid var(--main-color);
             border-radius: 16px;
@@ -46,39 +46,69 @@
         .subtitle {
             font-size: 0.95rem;
             color: #666;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .version-card {
+            background: #e8d8c8;
+            border: 2px solid var(--main-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.15s ease;
+        }
+
+        .version-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 0px var(--main-color);
+        }
+
+        .version-info {
+            flex: 1;
+            padding-right: 15px;
         }
 
         .version-tag {
             display: inline-block;
             background: var(--main-color);
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 6px;
             font-weight: bold;
             font-size: 0.9rem;
+            margin-bottom: 8px;
         }
 
         .version-date {
             font-size: 0.85rem;
-            color: #888;
-            margin-left: 10px;
+            color: #666;
+            margin-left: 8px;
         }
 
-        .changelog-section {
-            margin-bottom: 30px;
-            border-left: 3px solid var(--accent-color);
-            padding-left: 15px;
+        .version-desc {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
         }
 
-        ul {
-            padding-left: 20px;
-            line-height: 1.6;
-        }
-
-        li span {
+        .play-btn {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border: 2px solid var(--main-color);
+            border-radius: 8px;
             font-weight: bold;
-            color: var(--main-color);
+            white-space: nowrap;
+            box-shadow: 2px 2px 0px var(--main-color);
+        }
+
+        .play-btn:hover {
+            background: #c78a1f;
         }
 
         .badge {
@@ -86,54 +116,63 @@
             padding: 2px 6px;
             border-radius: 4px;
             color: white;
-            margin-right: 6px;
+            background: #2e7d32;
+            margin-right: 4px;
         }
-        .badge-feat { background: #2e7d32; }
-        .badge-fix { background: #c62828; }
-        .badge-ui { background: #0277bd; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>☕《昭和字律》開發版本紀錄</h1>
-        <div class="subtitle">Show Typing Kissaten — Project Changelog</div>
+        <h1>☕《昭和字律》專案版本歷程門戶</h1>
+        <div class="subtitle">Show Typing Kissaten — Version History Portal</div>
 
         <!-- 最新版本 v1.2 -->
-        <div class="changelog-section">
-            <div>
-                <span class="version-tag">v1.2.0</span>
-                <span class="version-date">2026-10-12</span>
+        <div class="version-card">
+            <div class="version-info">
+                <div>
+                    <span class="version-tag">v1.2.0</span>
+                    <span class="badge">最新版本</span>
+                    <span class="version-date">2026-10-12</span>
+                </div>
+                <p class="version-desc">
+                    新增 5 款餐點漸進動畫、QWERTY 指法高亮引導、全系統不分大小寫輸入優化。
+                </p>
             </div>
-            <ul>
-                <li><span class="badge badge-feat">NEW</span><span>大小寫寬容度更新</span>：全系統輸入改為自動忽略大小寫（可全小寫輸入），提升練習順暢度。</li>
-                <li><span class="badge badge-feat">NEW</span><span>甜點動態元件擴充</span>：新增 5 款昭和經典餐點（哈密瓜蘇打、焦糖布丁、冰咖啡、熱鬆餅、草莓聖代）的漸進式製作動畫。</li>
-                <li><span class="badge badge-ui">UI</span><span>指法鍵盤指引</span>：重構 QWERTY 鍵盤佈局，即時高亮顯示下一個需輸入的字母。</li>
-            </ul>
+            <!-- 指向 v1.2 資料夾內部的遊戲 -->
+            <a href="./v1.2/" class="play-btn" target="_blank">🎮 試玩此版本</a>
         </div>
 
         <!-- 版本 v1.1 -->
-        <div class="changelog-section">
-            <div>
-                <span class="version-tag">v1.1.0</span>
-                <span class="version-date">2026-10-05</span>
+        <div class="version-card">
+            <div class="version-info">
+                <div>
+                    <span class="version-tag">v1.1.0</span>
+                    <span class="version-date">2026-10-05</span>
+                </div>
+                <p class="version-desc">
+                    導入 City Pop 黑膠音遊玩法、Web Audio API 音效模擬、昭和色調 UI 升級。
+                </p>
             </div>
-            <ul>
-                <li><span class="badge badge-feat">NEW</span><span>黑膠唱片音遊模式</span>：導入 Web Audio API 模擬 City Pop 復古電子樂，結合降落音符判定。</li>
-                <li><span class="badge badge-ui">UI</span><span>昭和視覺主題定稿</span>：確定暖棕色與乳白色調，加入黑膠唱片旋轉動畫。</li>
-            </ul>
+            <!-- 指向 v1.1 資料夾內部的遊戲 -->
+            <a href="./v1.1/" class="play-btn" target="_blank">🎮 試玩此版本</a>
         </div>
 
-        <!-- 初始版本 v1.0 -->
-        <div class="changelog-section">
-            <div>
-                <span class="version-tag">v1.0.0</span>
-                <span class="version-date">2026-09-25</span>
+        <!-- 原型 v1.0 -->
+        <div class="version-card">
+            <div class="version-info">
+                <div>
+                    <span class="version-tag">v1.0.0</span>
+                    <span class="version-date">2026-09-25</span>
+                </div>
+                <p class="version-desc">
+                    基礎英文打字機制、菜單顯示與點餐計分原型開發。
+                </p>
             </div>
-            <ul>
-                <li><span class="badge badge-feat">NEW</span><span>原型建立</span>：基礎打字邏輯、菜單顯示與點餐計分系統上線。</li>
-            </ul>
+            <!-- 指向 v1.0 資料夾內部的遊戲 -->
+            <a href="./v1.0/" class="play-btn" target="_blank">🎮 試玩此版本</a>
         </div>
+
     </div>
 
 </body>
