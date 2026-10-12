@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>昭和字律：版本變更紀錄 (Changelog)</title>
+    <style>
+        :root {
+            --bg-color: #f4ece1;
+            --main-color: #8c2d19;
+            --accent-color: #d99b26;
+            --text-color: #362212;
+            --card-bg: #fff8f0;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card-bg);
+            border: 3px solid var(--main-color);
+            border-radius: 16px;
+            box-shadow: 6px 6px 0px var(--main-color);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: var(--main-color);
+            margin-top: 0;
+            border-bottom: 2px dashed var(--accent-color);
+            padding-bottom: 10px;
+            text-shadow: 1px 1px 0px var(--accent-color);
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .version-tag {
+            display: inline-block;
+            background: var(--main-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .version-date {
+            font-size: 0.85rem;
+            color: #888;
+            margin-left: 10px;
+        }
+
+        .changelog-section {
+            margin-bottom: 30px;
+            border-left: 3px solid var(--accent-color);
+            padding-left: 15px;
+        }
+
+        ul {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        li span {
+            font-weight: bold;
+            color: var(--main-color);
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+            margin-right: 6px;
+        }
+        .badge-feat { background: #2e7d32; }
+        .badge-fix { background: #c62828; }
+        .badge-ui { background: #0277bd; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>☕《昭和字律》開發版本紀錄</h1>
+        <div class="subtitle">Show Typing Kissaten — Project Changelog</div>
+
+        <!-- 最新版本 v1.2 -->
+        <div class="changelog-section">
+            <div>
+                <span class="version-tag">v1.2.0</span>
+                <span class="version-date">2026-10-12</span>
+            </div>
+            <ul>
+                <li><span class="badge badge-feat">NEW</span><span>大小寫寬容度更新</span>：全系統輸入改為自動忽略大小寫（可全小寫輸入），提升練習順暢度。</li>
+                <li><span class="badge badge-feat">NEW</span><span>甜點動態元件擴充</span>：新增 5 款昭和經典餐點（哈密瓜蘇打、焦糖布丁、冰咖啡、熱鬆餅、草莓聖代）的漸進式製作動畫。</li>
+                <li><span class="badge badge-ui">UI</span><span>指法鍵盤指引</span>：重構 QWERTY 鍵盤佈局，即時高亮顯示下一個需輸入的字母。</li>
+            </ul>
+        </div>
+
+        <!-- 版本 v1.1 -->
+        <div class="changelog-section">
+            <div>
+                <span class="version-tag">v1.1.0</span>
+                <span class="version-date">2026-10-05</span>
+            </div>
+            <ul>
+                <li><span class="badge badge-feat">NEW</span><span>黑膠唱片音遊模式</span>：導入 Web Audio API 模擬 City Pop 復古電子樂，結合降落音符判定。</li>
+                <li><span class="badge badge-ui">UI</span><span>昭和視覺主題定稿</span>：確定暖棕色與乳白色調，加入黑膠唱片旋轉動畫。</li>
+            </ul>
+        </div>
+
+        <!-- 初始版本 v1.0 -->
+        <div class="changelog-section">
+            <div>
+                <span class="version-tag">v1.0.0</span>
+                <span class="version-date">2026-09-25</span>
+            </div>
+            <ul>
+                <li><span class="badge badge-feat">NEW</span><span>原型建立</span>：基礎打字邏輯、菜單顯示與點餐計分系統上線。</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>
