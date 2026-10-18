@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>昭和字律：標準盲打指法教學版</title>
+    <style>
+        :root {
+            --bg-color: #f4ece1;
+            --main-color: #8c2d19;
+            --accent-color: #d99b26;
+            --text-color: #362212;
+            --card-bg: #fff8f0;
+            --container-w: 720px;
+
+            /* 手指顏色定義 */
+            --l-pinky: #ff8a80;
+            --l-ring: #ffb74d;
+            --l-middle: #ffd54f;
+            --l-index: #81c784;
+            --r-index: #64b5f6;
+            --r-middle: #ba68c8;
+            --r-ring: #f06292;
+            --r-pinky: #a1887f;
+        }
+
+        * { box-sizing: border-box; user-select: none; }
+
+        body {
+            font-family: 'Courier New', Courier, monospace, "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 { color: var(--main-color); margin: 0 0 4px 0; font-size: 1.8rem; }
+        .subtitle { font-size: 0.9rem; margin-bottom: 12px; color: #7d5a44; font-weight: bold; }
+
+        .dashboard {
+            display: flex; gap: 20px; background: var(--card-bg);
+            padding: 8px 20px; border-radius: 10px; border: 2px solid var(--main-color);
+            margin-bottom: 12px; font-weight: bold; font-size: 0.95rem;
+        }
+
+        .game-container {
+            width: 100%; max-width: var(--container-w);
+            background: var(--card-bg); border: 3px solid var(--main-color);
+            border-radius: 16px; box-shadow: 6px 6px 0px var(--main-color);
+            padding: 20px; position: relative;
+        }
+
+        /* 關卡切換區 */
+        .stage-selector { display: flex; gap: 6px; margin-bottom: 12px; }
+        .stage-btn {
+            flex: 1; padding: 8px 2px; border: 2px solid var(--main-color);
+            background: var(--bg-color); color: var(--text-color); font-weight: bold;
+            font-size: 0.8rem; cursor: pointer; border-radius: 6px; text-align: center;
+        }
+        .stage-btn.active { background: var(--main-color); color: white; }
+        .stage-btn.locked { background: #e0e0e0; color: #888; border-color: #aaa; cursor: not-allowed; }
+
+        /* 手指提示卡片 */
+        .finger-prompt-box {
+            background: #e8d8c8; border: 2px solid var(--main-color);
+            border-radius: 10px; padding: 8px 12px; text-align: center;
+            margin-bottom: 10px; font-weight: bold; font-size: 1.1rem;
+        }
+        .finger-name { color: var(--main-color); font-size: 1.2rem; text-decoration: underline; }
+
+        /* 目標字母區 */
+        .target-display {
+            font-size: 2.2rem; letter-spacing: 4px; font-weight: bold;
+            text-align: center; margin: 10px 0; font-family: monospace;
+        }
+        .matched { color: #2e7d32; text-decoration: underline; }
+        .unmatched { color: #a0a0a0; }
+
+        .text-input {
+            width: 80%; display: block; margin: 0 auto 10px auto; padding: 8px;
+            font-size: 1.2rem; border: 2px solid var(--main-color); border-radius: 8px;
+            text-align: center; outline: none; font-family: monospace;
+        }
+
+        /* 帶有手指特徵的 QWERTY 虛擬鍵盤 */
+        .keyboard-container {
+            display: flex; flex-direction: column; gap: 4px;
+            width: 100%; max-width: 580px; margin: 10px auto 0 auto;
+        }
+        .kb-row { display: flex; justify-content: center; gap: 4px; }
+        .key {
+            width: 44px; height: 44px; border: 2px solid var(--main-color);
+            border-radius: 6px; font-size: 1rem; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            background: #fff; transition: all 0.1s;
+        }
+
+        /* 各手指專屬色彩標籤 */
+        .fp-l-pinky { background-color: var(--l-pinky) !important; }
+        .fp-l-ring { background-color: var(--l-ring) !important; }
+        .fp-l-middle { background-color: var(--l-middle) !important; }
+        .fp-l-index { background-color: var(--l-index) !important; }
+        .fp-r-index { background-color: var(--r-index) !important; }
+        .fp-r-middle { background-color: var(--r-middle) !important; }
+        .fp-r-ring { background-color: var(--r-ring) !important; }
+        .fp-r-pinky { background-color: var(--r-pinky) !important; }
+
+        .key.active {
+            transform: scale(1.2); z-index: 5;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+            border-color: #000; color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>☕ 昭和字律：標準盲打指法版</h1>
+    <div class="subtitle">Touch Typing Guide — Finger Positioning Practice</div>
+
+    <div class="dashboard">
+        <div>📍 當前關卡: <span id="stage-name">Stage 1</span></div>
+        <div>🎯 進度: <span id="stage-progress">0/4</span></div>
+    </div>
+
+    <div class="game-container">
+        <!-- 關卡選擇器 -->
+        <div class="stage-selector">
+            <button class="stage-btn active" id="btn-s1" onclick="selectStage(1)">Stage 1<br>左手 (a s d f)</button>
+            <button class="stage-btn locked" id="btn-s2" onclick="selectStage(2)">Stage 2<br>右手 (j k l ;)</button>
+            <button class="stage-btn locked" id="btn-s3" onclick="selectStage(3)">Stage 3<br>基准鍵混合</button>
+            <button class="stage-btn locked" id="btn-s4" onclick="selectStage(4)">Stage 4<br>基准鍵單字</button>
+        </div>
+
+        <!-- 即時指法提示區 -->
+        <div class="finger-prompt-box">
+            👉 請使用手指：<span class="finger-name" id="finger-hint">左手小指</span>
+        </div>
+
+        <div class="target-display" id="target-display"></div>
+        <input type="text" class="text-input" id="typing-input" placeholder="請依照提示按下對應按鍵..." autocomplete="off" autofocus>
+        <div id="feedback" style="text-align: center; height: 20px; font-weight: bold; color: var(--main-color);"></div>
+
+        <!-- 彩色指法引導鍵盤 -->
+        <div class="keyboard-container">
+            <div class="kb-row" id="kb-row-1"></div>
+            <div class="kb-row" id="kb-row-2"></div>
+            <div class="kb-row" id="kb-row-3"></div>
+        </div>
+    </div>
+
+    <script>
+        // 手指映射表 (Finger Mapping)
+        const fingerMap = {
+            'a': { name: '左手小指 (Left Pinky)', class: 'fp-l-pinky' },
+            's': { name: '左手無名指 (Left Ring)', class: 'fp-l-ring' },
+            'd': { name: '左手中指 (Left Middle)', class: 'fp-l-middle' },
+            'f': { name: '左手食指 (Left Index)', class: 'fp-l-index' },
+            'g': { name: '左手食指 (Left Index)', class: 'fp-l-index' },
+            'j': { name: '右手食指 (Right Index)', class: 'fp-r-index' },
+            'h': { name: '右手食指 (Right Index)', class: 'fp-r-index' },
+            'k': { name: '右手中指 (Right Middle)', class: 'fp-r-middle' },
+            'l': { name: '右手無名指 (Right Ring)', class: 'fp-r-ring' },
+            ';': { name: '右手小指 (Right Pinky)', class: 'fp-r-pinky' }
+        };
+
+        // 循序漸進關卡內容（由簡單字母到單字）
+        const stages = {
+            1: { name: "Stage 1: 左手基准鍵", req: 4, items: ["a f s d", "f a d s", "s d a f", "a s d f"] },
+            2: { name: "Stage 2: 右手基准鍵", req: 4, items: ["j k l ;", "; l k j", "k j ; l", "j l k ;"] },
+            3: { name: "Stage 3: 左右手交替", req: 4, items: ["a j s k", "d l f ;", "f j d k", "a ; s l"] },
+            4: { name: "Stage 4: 基准鍵基礎單字", req: 4, items: ["ask", "dad", "fall", "flask"] }
+        };
+
+        let currentStage = 1;
+        let unlockedStage = 1;
+        let progress = 0;
+        let currentIndex = 0;
+
+        const row1 = ["q","w","e","r","t","y","u","i","o","p"];
+        const row2 = ["a","s","d","f","g","h","j","k","l",";"];
+        const row3 = ["z","x","c","v","b","n","m"];
+
+        function initKeyboard() {
+            const renderRow = (arr, elementId) => {
+                const rowEl = document.getElementById(elementId);
+                rowEl.innerHTML = '';
+                arr.forEach(char => {
+                    const k = document.createElement('div');
+                    k.className = 'key';
+                    k.id = `key-${char === ';' ? 'semicolon' : char}`;
+                    k.innerText = char;
+                    
+                    // 給予預設手指色彩底色
+                    if (fingerMap[char]) {
+                        k.classList.add(fingerMap[char].class);
+                    }
+                    rowEl.appendChild(k);
+                });
+            };
+            renderRow(row1, 'kb-row-1');
+            renderRow(row2, 'kb-row-2');
+            renderRow(row3, 'kb-row-3');
+        }
+
+        function loadTarget() {
+            const currentItem = stages[currentStage].items[currentIndex];
+            renderTarget(currentItem, '');
+            document.getElementById('typing-input').value = '';
+            document.getElementById('typing-input').focus();
+            updateFingerHint(currentItem[0]);
+        }
+
+        function renderTarget(target, input) {
+            const matched = target.substring(0, input.length);
+            const unmatched = target.substring(input.length);
+            document.getElementById('target-display').innerHTML = 
+                `<span class="matched">${matched}</span><span class="unmatched">${unmatched}</span>`;
+        }
+
+        function updateFingerHint(nextChar) {
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
+            if (!nextChar) return;
+
+            const charLower = nextChar.toLowerCase();
+            const fingerInfo = fingerMap[charLower];
+
+            if (fingerInfo) {
+                document.getElementById('finger-hint').innerText = fingerInfo.name;
+                const keyId = charLower === ';' ? 'key-semicolon' : `key-${charLower}`;
+                const keyEl = document.getElementById(keyId);
+                if (keyEl) keyEl.classList.add('active');
+            } else {
+                document.getElementById('finger-hint').innerText = "按下 Enter 或 空白鍵";
+            }
+        }
+
+        document.getElementById('typing-input').addEventListener('input', (e) => {
+            const inputVal = e.target.value.toLowerCase();
+            const targetText = stages[currentStage].items[currentIndex];
+
+            if (targetText.startsWith(inputVal)) {
+                renderTarget(targetText, inputVal);
+                document.getElementById('feedback').innerText = "";
+
+                if (inputVal.length < targetText.length) {
+                    updateFingerHint(targetText[inputVal.length]);
+                } else {
+                    // 完成當前小節
+                    progress++;
+                    if (progress >= stages[currentStage].req && unlockedStage === currentStage && currentStage < 4) {
+                        unlockedStage++;
+                        alert(`🎉 恭喜完成 ${stages[currentStage].name}！已解鎖 Stage ${unlockedStage}！`);
+                    }
+
+                    currentIndex = (currentIndex + 1) % stages[currentStage].items.length;
+                    updateUI();
+                    setTimeout(loadTarget, 500);
+                }
+            } else {
+                document.getElementById('feedback').innerText = "❌ 鍵盤按錯囉！請看下方高亮顏色指示。";
+            }
+        });
+
+        function selectStage(s) {
+            if (s > unlockedStage) {
+                alert(`🔒 Stage ${s} 尚未解鎖，請先通過前一關。`);
+                return;
+            }
+            currentStage = s;
+            progress = 0;
+            currentIndex = 0;
+            updateUI();
+            loadTarget();
+        }
+
+        function updateUI() {
+            document.getElementById('stage-name').innerText = stages[currentStage].name;
+            document.getElementById('stage-progress').innerText = `${progress}/${stages[currentStage].req}`;
+
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`btn-s${i}`);
+                btn.classList.remove('active');
+                if (i <= unlockedStage) {
+                    btn.classList.remove('locked');
+                } else {
+                    btn.classList.add('locked');
+                }
+            }
+            document.getElementById(`btn-s${currentStage}`).classList.add('active');
+        }
+
+        initKeyboard();
+        updateUI();
+        loadTarget();
+    </script>
+</body>
+</html>
