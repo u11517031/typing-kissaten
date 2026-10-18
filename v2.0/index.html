@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英打喫茶店：盲打指法教學版 (v2.0)</title>
+    <title>英打喫茶店 (English Typing Kissaten)</title>
     <style>
         :root {
             --bg-color: #f4ece1;
@@ -38,7 +38,7 @@
             min-height: 100vh;
         }
 
-        h1 { color: var(--main-color); margin: 0 0 4px 0; font-size: 1.8rem; }
+        h1 { color: var(--main-color); margin: 0 0 4px 0; font-size: 1.8rem; text-shadow: 1px 1px 0px var(--accent-color); }
         .subtitle { font-size: 0.9rem; margin-bottom: 12px; color: #7d5a44; font-weight: bold; }
 
         .dashboard {
@@ -54,7 +54,7 @@
             padding: 20px; position: relative;
         }
 
-        /* 關卡切換區 */
+        /* 關卡切換列 */
         .stage-selector { display: flex; gap: 6px; margin-bottom: 12px; }
         .stage-btn {
             flex: 1; padding: 8px 2px; border: 2px solid var(--main-color);
@@ -63,6 +63,7 @@
         }
         .stage-btn.active { background: var(--main-color); color: white; }
         .stage-btn.locked { background: #e0e0e0; color: #888; border-color: #aaa; cursor: not-allowed; }
+        .stage-btn.final-stage { background: #2e7d32; color: white; border-color: #1b5e20; }
 
         /* 手指提示卡片 */
         .finger-prompt-box {
@@ -74,17 +75,32 @@
 
         /* 目標字母區 */
         .target-display {
-            font-size: 2.2rem; letter-spacing: 4px; font-weight: bold;
+            font-size: 2.2rem; letter-spacing: 3px; font-weight: bold;
             text-align: center; margin: 10px 0; font-family: monospace;
         }
-        .matched { color: #2e7d32; text-decoration: underline; }
+        .matched { color: #2e7d32; text-decoration: underline; text-underline-offset: 4px; }
         .unmatched { color: #a0a0a0; }
 
         .text-input {
             width: 80%; display: block; margin: 0 auto 10px auto; padding: 8px;
             font-size: 1.2rem; border: 2px solid var(--main-color); border-radius: 8px;
-            text-align: center; outline: none; font-family: monospace;
+            text-align: center; outline: none; font-family: monospace; background: #fff;
         }
+
+        /* 舞台動態圖示 (飲料/餐點) */
+        .stage-canvas {
+            width: 100%; height: 140px; background: #fdf6ec; border: 2px dashed #d2b48c;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            margin-bottom: 10px; position: relative; overflow: hidden;
+        }
+
+        .glass-soda {
+            width: 50px; height: 90px; border: 3px solid var(--main-color); border-top: none;
+            border-radius: 0 0 12px 12px; position: relative; background: rgba(255,255,255,0.8); overflow: hidden;
+        }
+        .soda-syrup { position: absolute; bottom: 0; width: 100%; height: 0%; background: #2e7d32; transition: height 0.2s; }
+        .soda-water { position: absolute; bottom: 0; width: 100%; height: 0%; background: rgba(129, 199, 132, 0.7); transition: height 0.2s; }
+        .soda-cherry { position: absolute; top: 4px; left: 16px; width: 14px; height: 14px; background: #d32f2f; border-radius: 50%; opacity: 0; transition: opacity 0.2s; }
 
         /* QWERTY 虛擬鍵盤 */
         .keyboard-container {
@@ -99,7 +115,7 @@
             background: #fff; transition: all 0.1s;
         }
 
-        /* 各手指專屬色彩 */
+        /* 手指色彩 */
         .fp-l-pinky { background-color: var(--l-pinky) !important; }
         .fp-l-ring { background-color: var(--l-ring) !important; }
         .fp-l-middle { background-color: var(--l-middle) !important; }
@@ -111,49 +127,85 @@
 
         .key.active {
             transform: scale(1.2); z-index: 5;
-            box-shadow: 0 0 10px rgba(0,0,0,0.4);
-            border-color: #000; color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4); border-color: #000; color: #fff;
+        }
+
+        /* 慶祝對話框 Modal */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.65); z-index: 100; align-items: center; justify-content: center;
+        }
+        .modal-card {
+            background: var(--card-bg); border: 4px solid var(--main-color);
+            border-radius: 16px; padding: 25px; text-align: center; max-width: 460px;
+            box-shadow: 6px 6px 0px var(--accent-color);
+        }
+        .modal-btn {
+            background: var(--accent-color); color: white; border: 2px solid var(--main-color);
+            padding: 12px 22px; font-weight: bold; font-size: 1.1rem; border-radius: 8px;
+            cursor: pointer; margin-top: 15px; display: inline-block;
         }
     </style>
 </head>
 <body>
 
-    <h1>☕ 英打喫茶店：盲打指法教學版</h1>
-    <div class="subtitle">Touch Typing Guide — Level Progression & Finger Positioning</div>
+    <h1>☕ 英打喫茶店</h1>
+    <div class="subtitle">Show Typing Kissaten — Complete Game</div>
 
     <div class="dashboard">
-        <div>📍 當前關卡: <span id="stage-name">Stage 1</span></div>
-        <div>🎯 解鎖進度: <span id="stage-progress">0/10</span></div>
+        <div>📍 狀態: <span id="status-text">Stage 1 指法考驗</span></div>
+        <div>💰 營業額: <span id="money">0</span> 円</div>
+        <div>🎯 進度: <span id="stage-progress">0/10</span></div>
     </div>
 
     <div class="game-container">
-        <!-- 關卡選擇器 -->
+        <!-- 關卡選擇列 -->
         <div class="stage-selector">
             <button class="stage-btn active" id="btn-s1" onclick="selectStage(1)">Stage 1<br>左手 (a s d f)</button>
             <button class="stage-btn locked" id="btn-s2" onclick="selectStage(2)">Stage 2<br>右手 (j k l ;)</button>
             <button class="stage-btn locked" id="btn-s3" onclick="selectStage(3)">Stage 3<br>基准鍵混合</button>
-            <button class="stage-btn locked" id="btn-s4" onclick="selectStage(4)">Stage 4<br>昭和喫茶大師 (20題)</button>
+            <button class="stage-btn locked" id="btn-s4" onclick="selectStage(4)">Stage 4<br>隨機大師單字</button>
+            <button class="stage-btn locked final-stage" id="btn-s5" onclick="selectStage(5)">🏪 正式營業<br>(解鎖完全體)</button>
         </div>
 
         <!-- 即時指法提示區 -->
-        <div class="finger-prompt-box">
+        <div class="finger-prompt-box" id="prompt-box">
             👉 請使用手指：<span class="finger-name" id="finger-hint">左手小指</span>
+        </div>
+
+        <div class="stage-canvas">
+            <div class="glass-soda">
+                <div class="soda-syrup" id="soda-syrup"></div>
+                <div class="soda-water" id="soda-water"></div>
+                <div class="soda-cherry" id="soda-cherry"></div>
+            </div>
         </div>
 
         <div class="target-display" id="target-display"></div>
         <input type="text" class="text-input" id="typing-input" placeholder="請依照提示按下對應按鍵..." autocomplete="off" autofocus>
         <div id="feedback" style="text-align: center; height: 20px; font-weight: bold; color: var(--main-color);"></div>
 
-        <!-- 彩色指法引導鍵盤 -->
-        <div class="keyboard-container">
+        <!-- 彩色指法鍵盤 -->
+        <div class="keyboard-container" id="keyboard-container">
             <div class="kb-row" id="kb-row-1"></div>
             <div class="kb-row" id="kb-row-2"></div>
             <div class="kb-row" id="kb-row-3"></div>
         </div>
     </div>
 
+    <!-- 考驗通過 Modal 彈窗 -->
+    <div class="modal-overlay" id="victory-modal">
+        <div class="modal-card">
+            <h2 style="color: var(--main-color); margin-top:0;">🎉 考核通過！正式實習結束</h2>
+            <p style="font-size: 1rem; line-height: 1.6;">
+                恭喜您精通了盲打基准鍵！現在店面正式交由您掌舵，開始接待客人與現場特調吧！
+            </p>
+            <!-- 推薦按鈕文案選項 -->
+            <button class="modal-btn" onclick="startFullGame()">🏪 進入正式營業！點播 City Pop 迎接客人</button>
+        </div>
+    </div>
+
     <script>
-        // 手指映射表 (Finger Mapping)
         const fingerMap = {
             'a': { name: '左手小指 (Left Pinky)', class: 'fp-l-pinky' },
             'q': { name: '左手小指 (Left Pinky)', class: 'fp-l-pinky' },
@@ -184,64 +236,25 @@
             'p': { name: '右手小指 (Right Pinky)', class: 'fp-r-pinky' }
         };
 
-        // 關卡與單字庫配置 (通關門檻皆為 10 關)
+        const stage4Pool = [
+            "melon soda", "caramel pudding", "iced coffee", "hot pancake", "strawberry sundae",
+            "cream soda", "egg sandwich", "french toast", "black tea", "matcha latte",
+            "ice cream", "vinyl record", "showa kissaten", "city pop music", "retro jukebox",
+            "typing master", "sweet dessert", "morning service", "coffee beans", "plastic love"
+        ];
+
         const stages = {
-            1: { 
-                name: "Stage 1: 左手基准鍵", 
-                req: 10, 
-                items: [
-                    "a f s d", "f a d s", "s d a f", "a s d f", "d f a s",
-                    "f s a d", "s a d f", "d a f s", "a d s f", "f d s a"
-                ] 
-            },
-            2: { 
-                name: "Stage 2: 右手基准鍵", 
-                req: 10, 
-                items: [
-                    "j k l ;", "; l k j", "k j ; l", "j l k ;", "l k j ;",
-                    "; k j l", "k ; l j", "l j k ;", "j ; k l", "; j l k"
-                ] 
-            },
-            3: { 
-                name: "Stage 3: 左右手混合練習", 
-                req: 10, 
-                items: [
-                    "a j s k", "d l f ;", "f j d k", "a ; s l", "j a k s",
-                    "l d ; f", "f ; d l", "s k a j", "ask", "dad"
-                ] 
-            },
-            4: { 
-                name: "Stage 4: 昭和喫茶大師 (20大題目)", 
-                req: 10, 
-                items: [
-                    "melon soda",        // 1
-                    "caramel pudding",  // 2
-                    "iced coffee",      // 3
-                    "hot pancake",      // 4
-                    "strawberry sundae",// 5
-                    "cream soda",       // 6
-                    "egg sandwich",     // 7
-                    "french toast",     // 8
-                    "black tea",        // 9
-                    "matcha latte",     // 10
-                    "ice cream",        // 11
-                    "vinyl record",     // 12
-                    "showa kissaten",   // 13
-                    "city pop music",   // 14
-                    "retro jukebox",    // 15
-                    "typing master",    // 16
-                    "sweet dessert",    // 17
-                    "morning service",  // 18
-                    "coffee beans",     // 19
-                    "plastic love"      // 20
-                ] 
-            }
+            1: { name: "Stage 1: 左手基准鍵", req: 10, items: ["a f s d", "f a d s", "s d a f", "a s d f", "d f a s", "f s a d", "s a d f", "d a f s", "a d s f", "f d s a"] },
+            2: { name: "Stage 2: 右手基准鍵", req: 10, items: ["j k l ;", "; l k j", "k j ; l", "j l k ;", "l k j ;", "; k j l", "k ; l j", "l j k ;", "j ; k l", "; j l k"] },
+            3: { name: "Stage 3: 左右手混合練習", req: 10, items: ["a j s k", "d l f ;", "f j d k", "a ; s l", "j a k s", "l d ; f", "f ; d l", "s k a j", "ask", "dad"] },
+            4: { name: "Stage 4: 隨機大師單字", req: 10, items: [] }
         };
 
         let currentStage = 1;
         let unlockedStage = 1;
         let progress = 0;
-        let currentIndex = 0;
+        let money = 0;
+        let currentTargetText = "";
 
         const row1 = ["q","w","e","r","t","y","u","i","o","p"];
         const row2 = ["a","s","d","f","g","h","j","k","l",";"];
@@ -256,10 +269,7 @@
                     k.className = 'key';
                     k.id = `key-${char === ';' ? 'semicolon' : char}`;
                     k.innerText = char;
-                    
-                    if (fingerMap[char]) {
-                        k.classList.add(fingerMap[char].class);
-                    }
+                    if (fingerMap[char]) k.classList.add(fingerMap[char].class);
                     rowEl.appendChild(k);
                 });
             };
@@ -268,12 +278,21 @@
             renderRow(row3, 'kb-row-3');
         }
 
+        function getNextTarget() {
+            if (currentStage >= 4) {
+                return stage4Pool[Math.floor(Math.random() * stage4Pool.length)];
+            } else {
+                return stages[currentStage].items[progress % stages[currentStage].items.length];
+            }
+        }
+
         function loadTarget() {
-            const currentItem = stages[currentStage].items[currentIndex];
-            renderTarget(currentItem, '');
+            currentTargetText = getNextTarget();
+            renderTarget(currentTargetText, '');
             document.getElementById('typing-input').value = '';
             document.getElementById('typing-input').focus();
-            updateFingerHint(currentItem[0]);
+            updateFingerHint(currentTargetText[0]);
+            resetDrinkAnim();
         }
 
         function renderTarget(target, input) {
@@ -286,71 +305,95 @@
         function updateFingerHint(nextChar) {
             document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
             if (!nextChar) return;
-
             const charLower = nextChar.toLowerCase();
             if (charLower === ' ') {
                 document.getElementById('finger-hint').innerText = "雙手大拇指 (Space 空白鍵)";
                 return;
             }
-
             const fingerInfo = fingerMap[charLower];
             if (fingerInfo) {
                 document.getElementById('finger-hint').innerText = fingerInfo.name;
                 const keyId = charLower === ';' ? 'key-semicolon' : `key-${charLower}`;
                 const keyEl = document.getElementById(keyId);
                 if (keyEl) keyEl.classList.add('active');
-            } else {
-                document.getElementById('finger-hint').innerText = "按下對應字母按鍵";
             }
+        }
+
+        function resetDrinkAnim() {
+            document.getElementById('soda-syrup').style.height = '0%';
+            document.getElementById('soda-water').style.height = '0%';
+            document.getElementById('soda-cherry').style.opacity = '0';
+        }
+
+        function updateDrinkAnim(ratio) {
+            document.getElementById('soda-syrup').style.height = `${Math.min(ratio * 100, 30)}%`;
+            document.getElementById('soda-water').style.height = `${Math.min(ratio * 100, 85)}%`;
+            if (ratio >= 1) document.getElementById('soda-cherry').style.opacity = '1';
         }
 
         document.getElementById('typing-input').addEventListener('input', (e) => {
             const inputVal = e.target.value.toLowerCase();
-            const targetText = stages[currentStage].items[currentIndex];
 
-            if (targetText.startsWith(inputVal)) {
-                renderTarget(targetText, inputVal);
+            if (currentTargetText.startsWith(inputVal)) {
+                renderTarget(currentTargetText, inputVal);
                 document.getElementById('feedback').innerText = "";
 
-                if (inputVal.length < targetText.length) {
-                    updateFingerHint(targetText[inputVal.length]);
+                const ratio = inputVal.length / currentTargetText.length;
+                updateDrinkAnim(ratio);
+
+                if (inputVal.length < currentTargetText.length) {
+                    updateFingerHint(currentTargetText[inputVal.length]);
                 } else {
-                    // 完成當前題目
                     progress++;
-                    
-                    // 檢查是否達到 10 關解鎖條件
-                    if (progress >= stages[currentStage].req && unlockedStage === currentStage && currentStage < 4) {
-                        unlockedStage++;
-                        alert(`🎉 太棒了！您已成功完成 10 關練習，解鎖 ${stages[unlockedStage].name}！`);
+                    money += 50;
+
+                    if (progress >= 10) {
+                        if (currentStage === 4) {
+                            unlockedStage = 5;
+                            document.getElementById('victory-modal').style.display = 'flex';
+                        } else if (unlockedStage === currentStage) {
+                            unlockedStage++;
+                            alert(`🎉 成功完成 10 關練習！解鎖 ${stages[unlockedStage].name}！`);
+                        }
                     }
 
-                    // 循環切換題目
-                    currentIndex = (currentIndex + 1) % stages[currentStage].items.length;
                     updateUI();
                     setTimeout(loadTarget, 400);
                 }
             } else {
-                document.getElementById('feedback').innerText = "❌ 輸入錯誤，請看下方高亮字母與手指提示。";
+                document.getElementById('feedback').innerText = "❌ 打錯字母囉！看下方發光色彩按鍵。";
             }
         });
 
         function selectStage(s) {
             if (s > unlockedStage) {
-                alert(`🔒 Stage ${s} 尚未解鎖！請先在 Stage ${currentStage} 累積完成 10 關練習。`);
+                alert(`🔒 該階段尚未解鎖！請先完成當前階段的 10 題考核。`);
                 return;
             }
             currentStage = s;
             progress = 0;
-            currentIndex = 0;
             updateUI();
             loadTarget();
         }
 
-        function updateUI() {
-            document.getElementById('stage-name').innerText = stages[currentStage].name;
-            document.getElementById('stage-progress').innerText = `${progress}/${stages[currentStage].req}`;
+        function startFullGame() {
+            document.getElementById('victory-modal').style.display = 'none';
+            selectStage(5);
+        }
 
-            for (let i = 1; i <= 4; i++) {
+        function updateUI() {
+            document.getElementById('money').innerText = money;
+            document.getElementById('stage-progress').innerText = `${progress}/10`;
+
+            if (currentStage === 5) {
+                document.getElementById('status-text').innerText = "🏪 正式營業中 (完全體)";
+                document.getElementById('prompt-box').style.background = "#fff3e0";
+                document.getElementById('finger-hint').innerText = "自由出餐！無限制指法盲打挑戰";
+            } else {
+                document.getElementById('status-text').innerText = stages[currentStage].name;
+            }
+
+            for (let i = 1; i <= 5; i++) {
                 const btn = document.getElementById(`btn-s${i}`);
                 btn.classList.remove('active');
                 if (i <= unlockedStage) {
