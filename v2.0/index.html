@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英打喫茶店 (English Typing Kissaten)</title>
+    <title>英打喫茶店 (Show Typing Kissaten)</title>
     <style>
         :root {
             --bg-color: #f4ece1;
@@ -13,7 +13,7 @@
             --card-bg: #fff8f0;
             --container-w: 720px;
 
-            /* 手指專屬顏色 */
+            /* 指法手指專屬色彩 */
             --l-pinky: #ff8a80;
             --l-ring: #ffb74d;
             --l-middle: #ffd54f;
@@ -24,7 +24,10 @@
             --r-pinky: #a1887f;
         }
 
-        * { box-sizing: border-box; user-select: none; }
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
 
         body {
             font-family: 'Courier New', Courier, monospace, "Microsoft JhengHei", sans-serif;
@@ -38,84 +41,244 @@
             min-height: 100vh;
         }
 
-        h1 { color: var(--main-color); margin: 0 0 4px 0; font-size: 1.8rem; text-shadow: 1px 1px 0px var(--accent-color); }
-        .subtitle { font-size: 0.9rem; margin-bottom: 12px; color: #7d5a44; font-weight: bold; }
+        h1 {
+            color: var(--main-color);
+            margin: 0 0 4px 0;
+            font-size: 1.8rem;
+            text-shadow: 1px 1px 0px var(--accent-color);
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            color: #7d5a44;
+            font-weight: bold;
+        }
 
         .dashboard {
-            display: flex; gap: 20px; background: var(--card-bg);
-            padding: 8px 20px; border-radius: 10px; border: 2px solid var(--main-color);
-            margin-bottom: 12px; font-weight: bold; font-size: 0.95rem;
+            display: flex;
+            gap: 24px;
+            background: var(--card-bg);
+            padding: 10px 24px;
+            border-radius: 12px;
+            border: 2px solid var(--main-color);
+            box-shadow: 4px 4px 0px var(--main-color);
+            margin-bottom: 16px;
+            font-weight: bold;
+            font-size: 1.05rem;
         }
 
         .game-container {
-            width: 100%; max-width: var(--container-w);
-            background: var(--card-bg); border: 3px solid var(--main-color);
-            border-radius: 16px; box-shadow: 6px 6px 0px var(--main-color);
-            padding: 20px; position: relative;
+            width: 100%;
+            max-width: var(--container-w);
+            background: var(--card-bg);
+            border: 3px solid var(--main-color);
+            border-radius: 16px;
+            box-shadow: 6px 6px 0px var(--main-color);
+            padding: 20px;
+            position: relative;
         }
 
-        /* 關卡切換列 */
-        .stage-selector { display: flex; gap: 6px; margin-bottom: 12px; }
+        /* 關卡選擇器列 */
+        .stage-selector {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
         .stage-btn {
-            flex: 1; padding: 8px 2px; border: 2px solid var(--main-color);
-            background: var(--bg-color); color: var(--text-color); font-weight: bold;
-            font-size: 0.8rem; cursor: pointer; border-radius: 6px; text-align: center;
+            flex: 1;
+            padding: 8px 2px;
+            border: 2px solid var(--main-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 6px;
+            text-align: center;
+            transition: all 0.15s ease;
         }
-        .stage-btn.active { background: var(--main-color); color: white; }
-        .stage-btn.locked { background: #e0e0e0; color: #888; border-color: #aaa; cursor: not-allowed; }
-        .stage-btn.final-stage { background: #2e7d32; color: white; border-color: #1b5e20; }
 
-        /* 手指提示卡片 */
+        .stage-btn.active {
+            background: var(--main-color);
+            color: white;
+            box-shadow: 2px 2px 0px var(--accent-color);
+        }
+
+        .stage-btn.locked {
+            background: #e0e0e0;
+            color: #888;
+            border-color: #aaa;
+            cursor: not-allowed;
+        }
+
+        .stage-btn.final-shop {
+            background: #2e7d32;
+            color: white;
+            border-color: #1b5e20;
+        }
+
+        /* 手指指引卡片 */
         .finger-prompt-box {
-            background: #e8d8c8; border: 2px solid var(--main-color);
-            border-radius: 10px; padding: 8px 12px; text-align: center;
-            margin-bottom: 10px; font-weight: bold; font-size: 1.1rem;
+            background: #e8d8c8;
+            border: 2px solid var(--main-color);
+            border-radius: 10px;
+            padding: 8px 12px;
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
         }
-        .finger-name { color: var(--main-color); font-size: 1.2rem; text-decoration: underline; }
 
-        /* 目標字母區 */
-        .target-display {
-            font-size: 2.2rem; letter-spacing: 3px; font-weight: bold;
-            text-align: center; margin: 10px 0; font-family: monospace;
+        .finger-name {
+            color: var(--main-color);
+            font-size: 1.2rem;
+            text-decoration: underline;
         }
-        .matched { color: #2e7d32; text-decoration: underline; text-underline-offset: 4px; }
-        .unmatched { color: #a0a0a0; }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--main-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--main-color);
+            color: white;
+            box-shadow: 2px 2px 0px var(--accent-color);
+        }
+
+        .game-panel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 440px;
+        }
+
+        .game-panel.active {
+            display: flex;
+        }
+
+        /* 顧客對話框 */
+        .customer-box {
+            background: #e8d8c8;
+            border-radius: 12px;
+            border: 2px solid var(--main-color);
+            padding: 12px 16px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .order-speech {
+            font-size: 1.25rem;
+            color: var(--main-color);
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        /* 製作舞台 */
+        .stage {
+            width: 100%;
+            height: 180px;
+            background: #fdf6ec;
+            border: 2px dashed #d2b48c;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        /* 打字區域 */
+        .target-word {
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            margin: 6px 0 10px 0;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .target-word .matched {
+            color: #2e7d32;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .target-word .unmatched {
+            color: #888;
+        }
 
         .text-input {
-            width: 80%; display: block; margin: 0 auto 10px auto; padding: 8px;
-            font-size: 1.2rem; border: 2px solid var(--main-color); border-radius: 8px;
-            text-align: center; outline: none; font-family: monospace; background: #fff;
+            width: 80%;
+            padding: 10px;
+            font-size: 1.2rem;
+            border: 2px solid var(--main-color);
+            border-radius: 8px;
+            text-align: center;
+            outline: none;
+            background: #fff;
+            font-family: 'Courier New', Courier, monospace;
         }
 
-        /* 舞台動態圖示 (飲料/餐點) */
-        .stage-canvas {
-            width: 100%; height: 140px; background: #fdf6ec; border: 2px dashed #d2b48c;
-            border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            margin-bottom: 10px; position: relative; overflow: hidden;
+        .feedback {
+            height: 24px;
+            margin-top: 6px;
+            font-weight: bold;
+            color: var(--main-color);
+            font-size: 0.95rem;
         }
 
-        .glass-soda {
-            width: 50px; height: 90px; border: 3px solid var(--main-color); border-top: none;
-            border-radius: 0 0 12px 12px; position: relative; background: rgba(255,255,255,0.8); overflow: hidden;
+        /* 虛擬 QWERTY 鍵盤指法引導 */
+        .keyboard-guide {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+            max-width: 540px;
+            margin-top: 10px;
         }
-        .soda-syrup { position: absolute; bottom: 0; width: 100%; height: 0%; background: #2e7d32; transition: height 0.2s; }
-        .soda-water { position: absolute; bottom: 0; width: 100%; height: 0%; background: rgba(129, 199, 132, 0.7); transition: height 0.2s; }
-        .soda-cherry { position: absolute; top: 4px; left: 16px; width: 14px; height: 14px; background: #d32f2f; border-radius: 50%; opacity: 0; transition: opacity 0.2s; }
 
-        /* QWERTY 虛擬鍵盤 */
-        .keyboard-container {
-            display: flex; flex-direction: column; gap: 4px;
-            width: 100%; max-width: 580px; margin: 10px auto 0 auto;
+        .kb-row {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
         }
-        .kb-row { display: flex; justify-content: center; gap: 4px; }
+
         .key {
-            width: 44px; height: 44px; border: 2px solid var(--main-color);
-            border-radius: 6px; font-size: 1rem; font-weight: bold;
-            display: flex; align-items: center; justify-content: center;
-            background: #fff; transition: all 0.1s;
+            padding: 8px 0;
+            width: 42px;
+            height: 42px;
+            background: #e8d8c8;
+            border: 1.5px solid var(--main-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            text-align: center;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
         }
 
-        /* 手指色彩 */
+        /* 手指色彩定義 */
         .fp-l-pinky { background-color: var(--l-pinky) !important; }
         .fp-l-ring { background-color: var(--l-ring) !important; }
         .fp-l-middle { background-color: var(--l-middle) !important; }
@@ -126,11 +289,116 @@
         .fp-r-pinky { background-color: var(--r-pinky) !important; }
 
         .key.active {
-            transform: scale(1.2); z-index: 5;
-            box-shadow: 0 0 10px rgba(0,0,0,0.4); border-color: #000; color: #fff;
+            background: var(--accent-color) !important;
+            color: white !important;
+            transform: scale(1.2);
+            box-shadow: 0 0 8px rgba(0,0,0,0.4);
+            border-color: #8c2d19;
+            z-index: 5;
         }
 
-        /* 慶祝對話框 Modal */
+        /* 動態繪製五種餐點 */
+        /* 1. 哈密瓜蘇打 */
+        .glass-soda {
+            width: 60px; height: 110px;
+            border: 4px solid var(--main-color); border-top: none;
+            border-radius: 0 0 16px 16px;
+            position: relative; background: rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+        }
+        .soda-syrup { position: absolute; bottom: 0; width: 100%; height: 0%; background: #2e7d32; transition: height 0.3s; }
+        .soda-water { position: absolute; bottom: 0; width: 100%; height: 0%; background: rgba(129, 199, 132, 0.7); transition: height 0.3s; }
+        .soda-ice { position: absolute; top: 10px; left: 10px; width: 32px; height: 16px; background: rgba(255, 255, 255, 0.85); border-radius: 4px; opacity: 0; transition: opacity 0.3s; border: 1px solid #aaa; }
+        .soda-cherry { position: absolute; top: 4px; left: 20px; width: 18px; height: 18px; background: #d32f2f; border-radius: 50%; opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .soda-cherry::after { content: ''; position: absolute; top: -6px; left: 7px; width: 2px; height: 8px; background: #555; transform: rotate(15deg); }
+
+        /* 2. 焦糖布丁 */
+        .pudding-plate {
+            width: 110px; height: 16px; background: #ddd; border-radius: 50%; border: 2px solid #888;
+            position: relative; display: flex; justify-content: center; align-items: flex-end;
+        }
+        .pudding-body {
+            position: absolute; bottom: 6px; width: 70px; height: 0px; background: #ffeb3b;
+            border-radius: 12px 12px 4px 4px; border: 2px solid var(--main-color); transition: height 0.3s;
+            overflow: hidden;
+        }
+        .pudding-caramel { position: absolute; top: 0; width: 100%; height: 0%; background: #5d4037; transition: height 0.3s; }
+        .pudding-cream { position: absolute; top: -14px; left: 23px; width: 24px; height: 14px; background: #fff; border-radius: 50% 50% 0 0; opacity: 0; transition: opacity 0.3s; border: 1px solid #ccc; }
+
+        /* 3. 冰咖啡 */
+        .glass-coffee {
+            width: 55px; height: 115px; border: 4px solid var(--main-color); border-top: none;
+            border-radius: 0 0 12px 12px; position: relative; background: rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+        }
+        .coffee-liquid { position: absolute; bottom: 0; width: 100%; height: 0%; background: #3e2723; transition: height 0.3s; }
+        .coffee-cubes { position: absolute; top: 20px; left: 8px; width: 30px; height: 30px; border: 2px dashed #fff; opacity: 0; transition: opacity 0.3s; }
+        .coffee-straw { position: absolute; top: -15px; right: 12px; width: 6px; height: 110px; background: #d32f2f; transform: rotate(10deg); opacity: 0; transition: opacity 0.3s; }
+
+        /* 4. 熱鬆餅 */
+        .pancake-stack { position: relative; width: 100px; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        .pancake { width: 80px; height: 14px; background: #f57c00; border: 2px solid var(--main-color); border-radius: 10px; margin-top: -4px; opacity: 0; transition: opacity 0.3s; }
+        .pancake-butter { position: absolute; top: 12px; width: 16px; height: 10px; background: #fff176; border: 1px solid #f57f17; border-radius: 2px; opacity: 0; transition: opacity 0.3s; }
+        .pancake-syrup { position: absolute; top: 20px; width: 70px; height: 18px; background: rgba(121, 85, 72, 0.7); border-radius: 8px; opacity: 0; transition: opacity 0.3s; }
+
+        /* 5. 水果草莓聖代 */
+        .sundae-glass { width: 65px; height: 120px; border: 4px solid var(--main-color); border-top: none; border-radius: 0 0 24px 24px; position: relative; background: rgba(255, 255, 255, 0.8); overflow: hidden; }
+        .sundae-sauce { position: absolute; bottom: 0; width: 100%; height: 0%; background: #e91e63; transition: height 0.3s; }
+        .sundae-icecream { position: absolute; top: 30px; left: 7px; width: 44px; height: 44px; background: #fff; border-radius: 50%; opacity: 0; transition: opacity 0.3s; border: 1px solid #ddd; }
+        .sundae-fruit { position: absolute; top: 12px; left: 16px; width: 28px; height: 18px; background: #ff1744; border-radius: 50% 50% 0 0; opacity: 0; transition: opacity 0.3s; }
+
+        /* 黑膠唱片機音遊畫面 */
+        .vinyl-record {
+            width: 80px; height: 80px; background: #111; border-radius: 50%;
+            border: 4px solid var(--accent-color); display: flex; align-items: center; justify-content: center;
+            animation: spin 2.5s linear infinite paused; margin-bottom: 8px;
+        }
+        .vinyl-record.playing { animation-play-state: running; }
+        .vinyl-center { width: 24px; height: 24px; background: var(--main-color); border-radius: 50%; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .rhythm-track {
+            width: 100%; height: 200px; background: #1a1512; border-radius: 12px;
+            position: relative; overflow: hidden; border: 2px solid var(--main-color);
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
+        }
+
+        .hit-line {
+            position: absolute; bottom: 28px; width: 100%; height: 6px;
+            background: var(--accent-color); box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .falling-note {
+            position: absolute; width: 42px; height: 42px; background: #fff8f0;
+            border: 3px solid var(--main-color); border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-weight: bold;
+            font-size: 1.2rem; color: var(--main-color); top: -50px; left: calc(50% - 21px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .sparkle {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%) scale(0.5);
+            width: 90px; height: 90px; border-radius: 50%;
+            background: radial-gradient(circle, #ffe082, var(--accent-color), transparent);
+            pointer-events: none; opacity: 0; transition: all 0.15s ease-out;
+        }
+        .sparkle.active { opacity: 1; transform: translateX(-50%) scale(1.4); }
+
+        .shop-item {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 14px; background: #e8d8c8; border-radius: 10px;
+            border: 2px solid var(--main-color); box-sizing: border-box;
+        }
+
+        .btn {
+            background: var(--accent-color); border: 2px solid var(--main-color);
+            padding: 8px 16px; color: white; font-weight: bold; border-radius: 6px;
+            cursor: pointer; font-size: 0.95rem;
+        }
+        .btn:disabled { background: #ccc; cursor: not-allowed; border-color: #999; }
+
+        /* 通關彈窗 */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.65); z-index: 100; align-items: center; justify-content: center;
@@ -149,63 +417,107 @@
 </head>
 <body>
 
-    <h1>☕ 英打喫茶店</h1>
-    <div class="subtitle">Show Typing Kissaten — Complete Game</div>
+    <h1>☕ 歡迎光臨 英打喫茶店</h1>
+    <div class="subtitle">Show Typing Kissaten — Complete Version</div>
 
     <div class="dashboard">
-        <div>📍 狀態: <span id="status-text">Stage 1 指法考驗</span></div>
+        <div>📍 當前狀態: <span id="status-text">Stage 1 指法考驗</span></div>
         <div>💰 營業額: <span id="money">0</span> 円</div>
-        <div>🎯 進度: <span id="stage-progress">0/10</span></div>
+        <div>⭐ 正確率: <span id="accuracy">100</span>%</div>
     </div>
 
     <div class="game-container">
-        <!-- 關卡選擇列 -->
+        <!-- 關卡選擇器列 -->
         <div class="stage-selector">
             <button class="stage-btn active" id="btn-s1" onclick="selectStage(1)">Stage 1<br>左手 (a s d f)</button>
             <button class="stage-btn locked" id="btn-s2" onclick="selectStage(2)">Stage 2<br>右手 (j k l ;)</button>
             <button class="stage-btn locked" id="btn-s3" onclick="selectStage(3)">Stage 3<br>基准鍵混合</button>
             <button class="stage-btn locked" id="btn-s4" onclick="selectStage(4)">Stage 4<br>隨機大師單字</button>
-            <button class="stage-btn locked final-stage" id="btn-s5" onclick="selectStage(5)">🏪 正式營業<br>(解鎖完全體)</button>
+            <button class="stage-btn locked final-shop" id="btn-s5" onclick="selectStage(5)">🏪 正式營業<br>(解鎖完全體)</button>
         </div>
 
-        <!-- 即時指法提示區 -->
-        <div class="finger-prompt-box" id="prompt-box">
-            👉 請使用手指：<span class="finger-name" id="finger-hint">左手小指</span>
+        <!-- 模式切換按鈕（正式營業後開放） -->
+        <div class="tab-buttons" id="tab-buttons" style="display: none;">
+            <button class="tab-btn active" id="btn-cafe">🍮 喫茶店經營 (全不限大小寫)</button>
+            <button class="tab-btn" id="btn-music">🎷 黑膠唱片機 (進階音遊)</button>
         </div>
 
-        <div class="stage-canvas">
-            <div class="glass-soda">
-                <div class="soda-syrup" id="soda-syrup"></div>
-                <div class="soda-water" id="soda-water"></div>
-                <div class="soda-cherry" id="soda-cherry"></div>
+        <!-- 模式一：指法考核 / 經營主面板 -->
+        <div id="cafe-panel" class="game-panel active">
+            <!-- 手指提示卡片 (Stage 1~4 顯示) -->
+            <div class="finger-prompt-box" id="prompt-box" style="width: 100%;">
+                👉 請使用手指：<span class="finger-name" id="finger-hint">左手小指</span> (進度: <span id="stage-progress">0/10</span>)
+            </div>
+
+            <div class="customer-box" id="customer-box">
+                <div>👤 顧客點餐：</div>
+                <div class="order-speech" id="customer-order">Melon Soda (冰淇淋蘇打)</div>
+            </div>
+
+            <!-- 動態製作舞台 -->
+            <div class="stage" id="stage">
+                <!-- 動態注入餐點 HTML -->
+            </div>
+
+            <div class="target-word" id="cafe-target"></div>
+            <input type="text" class="text-input" id="cafe-input" placeholder="直接打英文（全小寫即可）..." autocomplete="off" autofocus>
+            <div class="feedback" id="cafe-feedback"></div>
+
+            <!-- 虛擬 QWERTY 鍵盤指法引導 -->
+            <div class="keyboard-guide">
+                <div class="kb-row" id="kb-row-1"></div>
+                <div class="kb-row" id="kb-row-2"></div>
+                <div class="kb-row" id="kb-row-3"></div>
             </div>
         </div>
 
-        <div class="target-display" id="target-display"></div>
-        <input type="text" class="text-input" id="typing-input" placeholder="請依照提示按下對應按鍵..." autocomplete="off" autofocus>
-        <div id="feedback" style="text-align: center; height: 20px; font-weight: bold; color: var(--main-color);"></div>
+        <!-- 模式二：黑膠音遊面板 -->
+        <div id="music-panel" class="game-panel">
+            <div id="shop-view" style="width: 100%;">
+                <p style="text-align: center; font-weight: bold; margin-bottom: 15px;">唱片行 (請先透過經營賺取 100 円)</p>
+                <div class="shop-item">
+                    <div>
+                        <strong>📀 City Pop 單曲: "Plastic Love"</strong><br>
+                        <small>難度：★★☆ | 價格：100 円</small>
+                    </div>
+                    <button class="btn" id="buy-btn">購買黑膠唱片</button>
+                </div>
+            </div>
 
-        <!-- 彩色指法鍵盤 -->
-        <div class="keyboard-container" id="keyboard-container">
-            <div class="kb-row" id="kb-row-1"></div>
-            <div class="kb-row" id="kb-row-2"></div>
-            <div class="kb-row" id="kb-row-3"></div>
+            <div id="music-view" style="display: none; width: 100%; text-align: center;">
+                <div style="display: flex; justify-content: center;">
+                    <div class="vinyl-record" id="vinyl">
+                        <div class="vinyl-center"></div>
+                    </div>
+                </div>
+                <div style="font-weight: bold; margin-bottom: 8px;">🎵 正在播放：Plastic Love (City Pop)</div>
+                
+                <div class="rhythm-track">
+                    <div class="hit-line"></div>
+                    <div class="falling-note" id="falling-note">a</div>
+                    <div class="sparkle" id="sparkle"></div>
+                </div>
+
+                <div class="target-word" id="music-target" style="margin-top: 10px;"></div>
+                <input type="text" class="text-input" id="music-input" placeholder="看著降落字母，按下對應按鍵..." autocomplete="off">
+                <div class="feedback" id="music-feedback"></div>
+            </div>
         </div>
     </div>
 
-    <!-- 考驗通過 Modal 彈窗 -->
+    <!-- 考核通關跳窗 Modal -->
     <div class="modal-overlay" id="victory-modal">
         <div class="modal-card">
-            <h2 style="color: var(--main-color); margin-top:0;">🎉 考核通過！正式實習結束</h2>
+            <h2 style="color: var(--main-color); margin-top:0;">🎉 考核通過！實習結束</h2>
             <p style="font-size: 1rem; line-height: 1.6;">
-                恭喜您精通了盲打基准鍵！現在店面正式交由您掌舵，開始接待客人與現場特調吧！
+                恭喜您精通了盲打基准鍵！現在店面正式交由您掌舵，開始接待客人、特調點心與解鎖 City Pop 黑膠唱片吧！
             </p>
-            <!-- 推薦按鈕文案選項 -->
-            <button class="modal-btn" onclick="startFullGame()">🏪 進入正式營業！點播 City Pop 迎接客人</button>
+            <button class="modal-btn" onclick="startFullGame()">🏪 進入正式營業！迎接第一位客人</button>
         </div>
     </div>
 
     <script>
+        // 手指映射表
         const fingerMap = {
             'a': { name: '左手小指 (Left Pinky)', class: 'fp-l-pinky' },
             'q': { name: '左手小指 (Left Pinky)', class: 'fp-l-pinky' },
@@ -236,6 +548,7 @@
             'p': { name: '右手小指 (Right Pinky)', class: 'fp-r-pinky' }
         };
 
+        // Stage 4 隨機 20 個單字庫
         const stage4Pool = [
             "melon soda", "caramel pudding", "iced coffee", "hot pancake", "strawberry sundae",
             "cream soda", "egg sandwich", "french toast", "black tea", "matcha latte",
@@ -243,6 +556,7 @@
             "typing master", "sweet dessert", "morning service", "coffee beans", "plastic love"
         ];
 
+        // 基礎關卡配置
         const stages = {
             1: { name: "Stage 1: 左手基准鍵", req: 10, items: ["a f s d", "f a d s", "s d a f", "a s d f", "d f a s", "f s a d", "s a d f", "d a f s", "a d s f", "f d s a"] },
             2: { name: "Stage 2: 右手基准鍵", req: 10, items: ["j k l ;", "; l k j", "k j ; l", "j l k ;", "l k j ;", "; k j l", "k ; l j", "l j k ;", "j ; k l", "; j l k"] },
@@ -250,130 +564,425 @@
             4: { name: "Stage 4: 隨機大師單字", req: 10, items: [] }
         };
 
+        // 完整經營 5 種餐點資料庫
+        const cafeOrders = [
+            { id: 'soda', text: "melon soda", display: "Melon Soda (冰淇淋蘇打)", reward: 40 },
+            { id: 'pudding', text: "caramel pudding", display: "Caramel Pudding (焦糖布丁)", reward: 50 },
+            { id: 'coffee', text: "iced coffee", display: "Iced Coffee (特調冰咖啡)", reward: 35 },
+            { id: 'pancake', text: "hot pancake", display: "Hot Pancake (經典手工鬆餅)", reward: 60 },
+            { id: 'sundae', text: "strawberry sundae", display: "Strawberry Sundae (草莓聖代)", reward: 55 }
+        ];
+
+        const lyrics = [
+            "don't worry about it",
+            "i'm just playing games",
+            "dance to the plastic beat",
+            "showa retro night cafe"
+        ];
+
+        // 遊戲核心變數
         let currentStage = 1;
         let unlockedStage = 1;
         let progress = 0;
         let money = 0;
+        let totalTyped = 0;
+        let correctTyped = 0;
+        let hasRecord = false;
+        let audioCtx = null;
+        let bgmInterval = null;
+
+        let currentCafeIndex = 0;
+        let currentMusicIndex = 0;
         let currentTargetText = "";
 
         const row1 = ["q","w","e","r","t","y","u","i","o","p"];
         const row2 = ["a","s","d","f","g","h","j","k","l",";"];
         const row3 = ["z","x","c","v","b","n","m"];
 
-        function initKeyboard() {
-            const renderRow = (arr, elementId) => {
-                const rowEl = document.getElementById(elementId);
-                rowEl.innerHTML = '';
-                arr.forEach(char => {
-                    const k = document.createElement('div');
-                    k.className = 'key';
-                    k.id = `key-${char === ';' ? 'semicolon' : char}`;
-                    k.innerText = char;
-                    if (fingerMap[char]) k.classList.add(fingerMap[char].class);
-                    rowEl.appendChild(k);
+        function initKeyboardUI() {
+            const createKeys = (rowArr, containerId) => {
+                const el = document.getElementById(containerId);
+                el.innerHTML = '';
+                rowArr.forEach(char => {
+                    const keyDiv = document.createElement('div');
+                    keyDiv.className = 'key';
+                    keyDiv.id = `key-${char === ';' ? 'semicolon' : char}`;
+                    keyDiv.innerText = char;
+                    if (fingerMap[char]) keyDiv.classList.add(fingerMap[char].class);
+                    el.appendChild(keyDiv);
                 });
             };
-            renderRow(row1, 'kb-row-1');
-            renderRow(row2, 'kb-row-2');
-            renderRow(row3, 'kb-row-3');
+            createKeys(row1, 'kb-row-1');
+            createKeys(row2, 'kb-row-2');
+            createKeys(row3, 'kb-row-3');
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playClickSound() {
+            initAudio();
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(350, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.04);
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.04);
+            } catch (e) {}
+        }
+
+        function playWinSound() {
+            initAudio();
+            if (!audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.08);
+                osc.frequency.setValueAtTime(783.99, now + 0.16);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(now + 0.3);
+            } catch (e) {}
+        }
+
+        function startBGM() {
+            initAudio();
+            if (!audioCtx || bgmInterval) return;
+            const notes = [261.63, 329.63, 392.00, 493.88, 392.00, 329.63];
+            let noteIdx = 0;
+            bgmInterval = setInterval(() => {
+                try {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = notes[noteIdx];
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.28);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.28);
+                    noteIdx = (noteIdx + 1) % notes.length;
+                } catch (e) {}
+            }, 300);
+        }
+
+        function stopBGM() {
+            if (bgmInterval) {
+                clearInterval(bgmInterval);
+                bgmInterval = null;
+            }
+        }
+
+        // 綁定按鈕頁籤
+        document.getElementById('btn-cafe').addEventListener('click', () => switchMode('cafe'));
+        document.getElementById('btn-music').addEventListener('click', () => switchMode('music'));
+        document.getElementById('buy-btn').addEventListener('click', buyRecord);
+
+        function switchMode(mode) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.game-panel').forEach(panel => panel.classList.remove('active'));
+
+            if (mode === 'cafe') {
+                document.getElementById('btn-cafe').classList.add('active');
+                document.getElementById('cafe-panel').classList.add('active');
+                document.getElementById('cafe-input').focus();
+                stopBGM();
+                document.getElementById('vinyl').classList.remove('playing');
+                cancelAnimationFrame(noteAnim);
+            } else {
+                document.getElementById('btn-music').classList.add('active');
+                document.getElementById('music-panel').classList.add('active');
+                if (hasRecord) {
+                    document.getElementById('music-input').focus();
+                    startBGM();
+                    document.getElementById('vinyl').classList.add('playing');
+                    startRhythmTrack();
+                }
+            }
         }
 
         function getNextTarget() {
-            if (currentStage >= 4) {
+            if (currentStage === 5) {
+                return cafeOrders[currentCafeIndex].text;
+            } else if (currentStage === 4) {
                 return stage4Pool[Math.floor(Math.random() * stage4Pool.length)];
             } else {
                 return stages[currentStage].items[progress % stages[currentStage].items.length];
             }
         }
 
-        function loadTarget() {
-            currentTargetText = getNextTarget();
-            renderTarget(currentTargetText, '');
-            document.getElementById('typing-input').value = '';
-            document.getElementById('typing-input').focus();
-            updateFingerHint(currentTargetText[0]);
-            resetDrinkAnim();
+        function loadCafeTarget() {
+            if (currentStage === 5) {
+                const order = cafeOrders[currentCafeIndex];
+                document.getElementById('customer-order').innerText = order.display;
+                renderStage(order.id);
+                currentTargetText = order.text;
+            } else {
+                document.getElementById('customer-order').innerText = `練習目標：${stages[currentStage].name}`;
+                renderStage('soda'); // 練習時顯示預設繪製
+                currentTargetText = getNextTarget();
+            }
+
+            renderTarget('cafe-target', currentTargetText, '');
+            document.getElementById('cafe-input').value = '';
+            document.getElementById('cafe-input').focus();
+            updateKeyboardGuide(currentTargetText[0]);
         }
 
-        function renderTarget(target, input) {
-            const matched = target.substring(0, input.length);
-            const unmatched = target.substring(input.length);
-            document.getElementById('target-display').innerHTML = 
-                `<span class="matched">${matched}</span><span class="unmatched">${unmatched}</span>`;
+        function renderStage(id) {
+            const stage = document.getElementById('stage');
+            if (id === 'soda') {
+                stage.innerHTML = `
+                    <div class="glass-soda">
+                        <div class="soda-syrup" id="stage-syrup"></div>
+                        <div class="soda-water" id="stage-water"></div>
+                        <div class="soda-ice" id="stage-ice"></div>
+                        <div class="soda-cherry" id="stage-cherry"></div>
+                    </div>`;
+            } else if (id === 'pudding') {
+                stage.innerHTML = `
+                    <div class="pudding-plate">
+                        <div class="pudding-body" id="stage-body">
+                            <div class="pudding-caramel" id="stage-caramel"></div>
+                        </div>
+                        <div class="pudding-cream" id="stage-cream"></div>
+                    </div>`;
+            } else if (id === 'coffee') {
+                stage.innerHTML = `
+                    <div class="glass-coffee">
+                        <div class="coffee-liquid" id="stage-liquid"></div>
+                        <div class="coffee-cubes" id="stage-cubes"></div>
+                        <div class="coffee-straw" id="stage-straw"></div>
+                    </div>`;
+            } else if (id === 'pancake') {
+                stage.innerHTML = `
+                    <div class="pancake-stack">
+                        <div class="pancake" id="p1"></div>
+                        <div class="pancake" id="p2"></div>
+                        <div class="pancake" id="p3"></div>
+                        <div class="pancake-butter" id="stage-butter"></div>
+                        <div class="pancake-syrup" id="stage-syrup2"></div>
+                    </div>`;
+            } else if (id === 'sundae') {
+                stage.innerHTML = `
+                    <div class="sundae-glass">
+                        <div class="sundae-sauce" id="stage-sauce"></div>
+                        <div class="sundae-icecream" id="stage-icecream"></div>
+                        <div class="sundae-fruit" id="stage-fruit"></div>
+                    </div>`;
+            }
         }
 
-        function updateFingerHint(nextChar) {
+        function updateStageAnimation(id, ratio) {
+            if (id === 'soda') {
+                document.getElementById('stage-syrup').style.height = `${Math.min(ratio * 100, 30)}%`;
+                document.getElementById('stage-water').style.height = `${Math.min(ratio * 100, 85)}%`;
+                if (ratio > 0.6 && document.getElementById('stage-ice')) document.getElementById('stage-ice').style.opacity = '1';
+                if (ratio >= 1 && document.getElementById('stage-cherry')) {
+                    document.getElementById('stage-cherry').style.opacity = '1';
+                    document.getElementById('stage-cherry').style.transform = 'scale(1)';
+                }
+            } else if (id === 'pudding') {
+                if (document.getElementById('stage-body')) document.getElementById('stage-body').style.height = `${Math.min(ratio * 70, 55)}px`;
+                if (document.getElementById('stage-caramel')) document.getElementById('stage-caramel').style.height = `${Math.min(ratio * 100, 40)}%`;
+                if (ratio >= 1 && document.getElementById('stage-cream')) document.getElementById('stage-cream').style.opacity = '1';
+            } else if (id === 'coffee') {
+                if (document.getElementById('stage-liquid')) document.getElementById('stage-liquid').style.height = `${Math.min(ratio * 100, 85)}%`;
+                if (ratio > 0.5 && document.getElementById('stage-cubes')) document.getElementById('stage-cubes').style.opacity = '1';
+                if (ratio >= 1 && document.getElementById('stage-straw')) document.getElementById('stage-straw').style.opacity = '1';
+            } else if (id === 'pancake') {
+                if (ratio > 0.2 && document.getElementById('p1')) document.getElementById('p1').style.opacity = '1';
+                if (ratio > 0.5 && document.getElementById('p2')) document.getElementById('p2').style.opacity = '1';
+                if (ratio > 0.7 && document.getElementById('p3')) document.getElementById('p3').style.opacity = '1';
+                if (ratio >= 0.9 && document.getElementById('stage-butter')) document.getElementById('stage-butter').style.opacity = '1';
+                if (ratio >= 1 && document.getElementById('stage-syrup2')) document.getElementById('stage-syrup2').style.opacity = '1';
+            } else if (id === 'sundae') {
+                if (document.getElementById('stage-sauce')) document.getElementById('stage-sauce').style.height = `${Math.min(ratio * 100, 45)}%`;
+                if (ratio > 0.5 && document.getElementById('stage-icecream')) document.getElementById('stage-icecream').style.opacity = '1';
+                if (ratio >= 1 && document.getElementById('stage-fruit')) document.getElementById('stage-fruit').style.opacity = '1';
+            }
+        }
+
+        // 輸入監聽（全小寫不分大小寫）
+        document.getElementById('cafe-input').addEventListener('input', (e) => {
+            playClickSound();
+            const inputVal = e.target.value.toLowerCase();
+            totalTyped++;
+
+            if (currentTargetText.startsWith(inputVal)) {
+                correctTyped++;
+                renderTarget('cafe-target', currentTargetText, inputVal);
+                document.getElementById('cafe-feedback').innerText = "";
+
+                const ratio = inputVal.length / currentTargetText.length;
+                const currentId = currentStage === 5 ? cafeOrders[currentCafeIndex].id : 'soda';
+                updateStageAnimation(currentId, ratio);
+
+                if (inputVal.length < currentTargetText.length) {
+                    updateKeyboardGuide(currentTargetText[inputVal.length]);
+                } else {
+                    updateKeyboardGuide('');
+                }
+
+                // 完全匹配完成
+                if (inputVal === currentTargetText) {
+                    playWinSound();
+                    
+                    if (currentStage === 5) {
+                        const reward = cafeOrders[currentCafeIndex].reward;
+                        money += reward;
+                        document.getElementById('cafe-feedback').innerText = `✨ 製作完成！獲得 ${reward} 円`;
+                        currentCafeIndex = (currentCafeIndex + 1) % cafeOrders.length;
+                    } else {
+                        progress++;
+                        money += 30;
+                        document.getElementById('cafe-feedback').innerText = `✨ 考驗完成 (+30円)`;
+
+                        if (progress >= 10) {
+                            if (currentStage === 4) {
+                                unlockedStage = 5;
+                                document.getElementById('victory-modal').style.display = 'flex';
+                            } else if (unlockedStage === currentStage) {
+                                unlockedStage++;
+                                alert(`🎉 成功完成 10 關練習！解鎖 ${stages[unlockedStage].name}！`);
+                            }
+                        }
+                    }
+
+                    updateDisplay();
+                    setTimeout(loadCafeTarget, 600);
+                }
+            } else {
+                document.getElementById('cafe-feedback').innerText = "❌ 按錯字母囉，請繼續輸入小寫字母！";
+            }
+            updateDisplay();
+        });
+
+        function updateKeyboardGuide(nextChar) {
             document.querySelectorAll('.key').forEach(k => k.classList.remove('active'));
             if (!nextChar) return;
+
             const charLower = nextChar.toLowerCase();
             if (charLower === ' ') {
                 document.getElementById('finger-hint').innerText = "雙手大拇指 (Space 空白鍵)";
                 return;
             }
+
             const fingerInfo = fingerMap[charLower];
             if (fingerInfo) {
                 document.getElementById('finger-hint').innerText = fingerInfo.name;
                 const keyId = charLower === ';' ? 'key-semicolon' : `key-${charLower}`;
-                const keyEl = document.getElementById(keyId);
-                if (keyEl) keyEl.classList.add('active');
+                const activeKey = document.getElementById(keyId);
+                if (activeKey) activeKey.classList.add('active');
             }
         }
 
-        function resetDrinkAnim() {
-            document.getElementById('soda-syrup').style.height = '0%';
-            document.getElementById('soda-water').style.height = '0%';
-            document.getElementById('soda-cherry').style.opacity = '0';
+        function buyRecord() {
+            if (money >= 100) {
+                money -= 100;
+                hasRecord = true;
+                updateDisplay();
+                document.getElementById('shop-view').style.display = 'none';
+                document.getElementById('music-view').style.display = 'block';
+                loadMusicTarget();
+                startBGM();
+                document.getElementById('vinyl').classList.add('playing');
+                startRhythmTrack();
+            } else {
+                alert("營業額不足！請先透過喫茶店經營賺取 100 円。");
+            }
         }
 
-        function updateDrinkAnim(ratio) {
-            document.getElementById('soda-syrup').style.height = `${Math.min(ratio * 100, 30)}%`;
-            document.getElementById('soda-water').style.height = `${Math.min(ratio * 100, 85)}%`;
-            if (ratio >= 1) document.getElementById('soda-cherry').style.opacity = '1';
+        function loadMusicTarget() {
+            const target = lyrics[currentMusicIndex];
+            renderTarget('music-target', target, '');
+            document.getElementById('music-input').value = '';
+            document.getElementById('music-input').focus();
         }
 
-        document.getElementById('typing-input').addEventListener('input', (e) => {
+        let notePos = -50;
+        let noteAnim = null;
+        let currentNoteChar = "a";
+
+        function startRhythmTrack() {
+            cancelAnimationFrame(noteAnim);
+            function loop() {
+                notePos += 2.2;
+                if (notePos > 210) {
+                    notePos = -50;
+                    currentNoteChar = row2[Math.floor(Math.random() * row2.length)];
+                    document.getElementById('falling-note').innerText = currentNoteChar;
+                }
+                document.getElementById('falling-note').style.top = `${notePos}px`;
+                noteAnim = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        function triggerSparkle() {
+            const sparkle = document.getElementById('sparkle');
+            sparkle.classList.add('active');
+            setTimeout(() => sparkle.classList.remove('active'), 180);
+        }
+
+        document.getElementById('music-input').addEventListener('input', (e) => {
+            playClickSound();
             const inputVal = e.target.value.toLowerCase();
+            const targetText = lyrics[currentMusicIndex];
 
-            if (currentTargetText.startsWith(inputVal)) {
-                renderTarget(currentTargetText, inputVal);
-                document.getElementById('feedback').innerText = "";
+            const lastChar = inputVal.slice(-1);
+            if (lastChar === currentNoteChar && notePos >= 135 && notePos <= 185) {
+                triggerSparkle();
+                notePos = -50;
+                currentNoteChar = row2[Math.floor(Math.random() * row2.length)];
+                document.getElementById('falling-note').innerText = currentNoteChar;
+            }
 
-                const ratio = inputVal.length / currentTargetText.length;
-                updateDrinkAnim(ratio);
+            totalTyped++;
+            if (targetText.startsWith(inputVal)) {
+                correctTyped++;
+                renderTarget('music-target', targetText, inputVal);
 
-                if (inputVal.length < currentTargetText.length) {
-                    updateFingerHint(currentTargetText[inputVal.length]);
-                } else {
-                    progress++;
+                if (inputVal === targetText) {
+                    playWinSound();
                     money += 50;
-
-                    if (progress >= 10) {
-                        if (currentStage === 4) {
-                            unlockedStage = 5;
-                            document.getElementById('victory-modal').style.display = 'flex';
-                        } else if (unlockedStage === currentStage) {
-                            unlockedStage++;
-                            alert(`🎉 成功完成 10 關練習！解鎖 ${stages[unlockedStage].name}！`);
-                        }
-                    }
-
-                    updateUI();
-                    setTimeout(loadTarget, 400);
+                    document.getElementById('music-feedback').innerText = "🎶 PERFECT! 連擊獲得 +50 円";
+                    currentMusicIndex = (currentMusicIndex + 1) % lyrics.length;
+                    updateDisplay();
+                    setTimeout(loadMusicTarget, 600);
                 }
             } else {
-                document.getElementById('feedback').innerText = "❌ 打錯字母囉！看下方發光色彩按鍵。";
+                document.getElementById('music-feedback').innerText = "🎵 打錯字母囉！";
             }
+            updateDisplay();
         });
 
         function selectStage(s) {
             if (s > unlockedStage) {
-                alert(`🔒 該階段尚未解鎖！請先完成當前階段的 10 題考核。`);
+                alert(`🔒 該階段尚未解鎖！請先完成前一關的 10 題考核。`);
                 return;
             }
             currentStage = s;
             progress = 0;
             updateUI();
-            loadTarget();
+            loadCafeTarget();
         }
 
         function startFullGame() {
@@ -381,16 +990,42 @@
             selectStage(5);
         }
 
-        function updateUI() {
+        function renderTarget(elementId, target, input) {
+            const matched = target.substring(0, input.length);
+            const unmatched = target.substring(input.length);
+            document.getElementById(elementId).innerHTML = 
+                `<span class="matched">${matched}</span><span class="unmatched">${unmatched}</span>`;
+        }
+
+        function updateDisplay() {
             document.getElementById('money').innerText = money;
+            const acc = totalTyped === 0 ? 100 : Math.round((correctTyped / totalTyped) * 100);
+            document.getElementById('accuracy').innerText = acc;
+
+            const buyBtn = document.getElementById('buy-btn');
+            if (hasRecord) {
+                buyBtn.innerText = "已擁有唱片";
+                buyBtn.disabled = true;
+            } else if (money < 100) {
+                buyBtn.innerText = "營業額不足 (100円)";
+            } else {
+                buyBtn.innerText = "購買黑膠唱片";
+            }
+        }
+
+        function updateUI() {
+            updateDisplay();
             document.getElementById('stage-progress').innerText = `${progress}/10`;
 
             if (currentStage === 5) {
                 document.getElementById('status-text').innerText = "🏪 正式營業中 (完全體)";
-                document.getElementById('prompt-box').style.background = "#fff3e0";
-                document.getElementById('finger-hint').innerText = "自由出餐！無限制指法盲打挑戰";
+                document.getElementById('prompt-box').style.display = "none";
+                document.getElementById('tab-buttons').style.display = "flex";
+                document.getElementById('customer-box').style.display = "block";
             } else {
                 document.getElementById('status-text').innerText = stages[currentStage].name;
+                document.getElementById('prompt-box').style.display = "block";
+                document.getElementById('tab-buttons').style.display = "none";
             }
 
             for (let i = 1; i <= 5; i++) {
@@ -405,9 +1040,10 @@
             document.getElementById(`btn-s${currentStage}`).classList.add('active');
         }
 
-        initKeyboard();
+        // 初始化
+        initKeyboardUI();
         updateUI();
-        loadTarget();
+        loadCafeTarget();
     </script>
 </body>
 </html>
