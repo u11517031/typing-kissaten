@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英打喫茶店：專案版本歷程門戶 (Version Portal)</title>
+    <title>《英打喫茶店》專案版本歷程門戶 (Version Portal)</title>
     <style>
         :root {
             --bg-color: #f4ece1;
@@ -26,7 +26,7 @@
 
         .container {
             width: 100%;
-            max-width: 760px;
+            max-width: 780px;
             background: var(--card-bg);
             border: 3px solid var(--main-color);
             border-radius: 16px;
@@ -66,6 +66,12 @@
             box-shadow: 3px 3px 0px var(--main-color);
         }
 
+        .version-card.presentation {
+            border: 3px solid #2e7d32;
+            background: #f1f8e9;
+            box-shadow: 4px 4px 0px #2e7d32;
+        }
+
         .version-card.latest {
             border: 3px solid var(--main-color);
             background: #fdf3e7;
@@ -86,6 +92,10 @@
             font-weight: bold;
             font-size: 0.9rem;
             margin-bottom: 8px;
+        }
+
+        .version-tag.demo {
+            background: #2e7d32;
         }
 
         .version-date {
@@ -113,8 +123,14 @@
             box-shadow: 2px 2px 0px var(--main-color);
         }
 
+        .play-btn.demo-btn {
+            background: #2e7d32;
+            border-color: #1b5e20;
+            box-shadow: 2px 2px 0px #1b5e20;
+        }
+
         .play-btn:hover {
-            background: #c78a1f;
+            opacity: 0.9;
         }
 
         .badge {
@@ -131,25 +147,41 @@
 
     <div class="container">
         <h1>☕《英打喫茶店》專案版本歷程門戶</h1>
-        <div class="subtitle">Show Typing Kissaten — Version History Portal</div>
+        <div class="subtitle">English Typing Kissaten — Version History Portal</div>
 
-        <!-- 版本二 (v2.0.0) -->
+        <!-- 簡報報告體驗專用版 (Demo Edition) -->
+        <div class="version-card presentation">
+            <div class="version-info">
+                <div>
+                    <span class="version-tag demo">Demo Edition</span>
+                    <span class="badge">🎤 簡報發表專用</span>
+                    <span class="version-date">2026-10-18</span>
+                </div>
+                <p class="version-desc">
+                    <strong>上台報告演示體驗版：</strong><br>
+                    全關卡（Stage 1 ~ Stage 5 正式營業完全體）解除關卡鎖定與次數限制，簡報者可隨時點擊按鈕自由切換展示各關亮點與特調動畫。
+                </p>
+            </div>
+            <a href="./demo/" class="play-btn demo-btn" target="_blank">🎤 啟動 Demo 展示版</a>
+        </div>
+
+        <!-- 完整漸進式關卡版 (v2.0) -->
         <div class="version-card latest">
             <div class="version-info">
                 <div>
                     <span class="version-tag">v2.0.0</span>
-                    <span class="badge">最新版本</span>
+                    <span class="badge">教學完整版</span>
                     <span class="version-date">2026-10-18</span>
                 </div>
                 <p class="version-desc">
-                    <strong>盲打指法教學與漸進式關卡：</strong><br>
-                    依照教學標準從左手 (a s d f)、右手 (j k l ;) 基准鍵循序漸進練習。新增帶有色彩指引的虛擬鍵盤與即時手指按鍵提示（如「請用：左手食指」）。
+                    <strong>標準盲打教學與經營解鎖版：</strong><br>
+                    嚴格循序漸進關卡機制（Stage 1 左手 -> Stage 2 右手 -> Stage 3 混合 -> Stage 4 隨機單字，每關需打滿 10 題），完成考核後原場景解鎖正式營業店面與 City Pop 音遊。
                 </p>
             </div>
-            <a href="./v2.0/" class="play-btn" target="_blank">🎮 試玩此版本</a>
+            <a href="./v2.0/" class="play-btn" target="_blank">🎮 體驗標準教學版</a>
         </div>
 
-        <!-- 版本一 (v1.0.0) -->
+        <!-- 原型版本 (v1.0) -->
         <div class="version-card">
             <div class="version-info">
                 <div>
@@ -161,7 +193,7 @@
                     昭和喫茶店點餐介面原型，支援基礎英文單字輸入與計分機制。
                 </p>
             </div>
-            <a href="./v1.0/" class="play-btn" target="_blank">🎮 試玩此版本</a>
+            <a href="./v1.0/" class="play-btn" target="_blank">🎮 試玩 prototype</a>
         </div>
 
     </div>
