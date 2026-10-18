@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英打喫茶店版本紀錄 (Version Portal)</title>
+    <title>昭和字律：專案版本歷程門戶 (Version Portal)</title>
     <style>
         :root {
             --bg-color: #f4ece1;
@@ -26,7 +26,7 @@
 
         .container {
             width: 100%;
-            max-width: 750px;
+            max-width: 760px;
             background: var(--card-bg);
             border: 3px solid var(--main-color);
             border-radius: 16px;
@@ -66,6 +66,12 @@
             box-shadow: 3px 3px 0px var(--main-color);
         }
 
+        .version-card.latest {
+            border: 3px solid var(--main-color);
+            background: #fdf3e7;
+            box-shadow: 4px 4px 0px var(--accent-color);
+        }
+
         .version-info {
             flex: 1;
             padding-right: 15px;
@@ -91,7 +97,7 @@
         .version-desc {
             font-size: 0.95rem;
             line-height: 1.5;
-            margin: 0;
+            margin: 6px 0 0 0;
         }
 
         .play-btn {
@@ -124,10 +130,26 @@
 <body>
 
     <div class="container">
-        <h1>☕《英打喫茶店》版本紀錄</h1>
+        <h1>☕《昭和字律》專案版本歷程門戶</h1>
         <div class="subtitle">Show Typing Kissaten — Version History Portal</div>
 
-        <!-- 原型 v1.0 -->
+        <!-- 版本二 (v2.0.0) -->
+        <div class="version-card latest">
+            <div class="version-info">
+                <div>
+                    <span class="version-tag">v2.0.0</span>
+                    <span class="badge">最新版本</span>
+                    <span class="version-date">2026-10-18</span>
+                </div>
+                <p class="version-desc">
+                    <strong>盲打指法教學與漸進式關卡：</strong><br>
+                    依照教學標準從左手 (a s d f)、右手 (j k l ;) 基准鍵循序漸進練習。新增帶有色彩指引的虛擬鍵盤與即時手指按鍵提示（如「請用：左手食指」）。
+                </p>
+            </div>
+            <a href="./v2.0/" class="play-btn" target="_blank">🎮 試玩此版本</a>
+        </div>
+
+        <!-- 版本一 (v1.0.0) -->
         <div class="version-card">
             <div class="version-info">
                 <div>
@@ -135,10 +157,10 @@
                     <span class="version-date">2026-09-25</span>
                 </div>
                 <p class="version-desc">
-                    基礎英文打字機制、菜單顯示與點餐計分原型開發。
+                    <strong>基礎點餐打字原型：</strong><br>
+                    昭和喫茶店點餐介面原型，支援基礎英文單字輸入與計分機制。
                 </p>
             </div>
-            <!-- 指向 v1.0 資料夾內部的遊戲 -->
             <a href="./v1.0/" class="play-btn" target="_blank">🎮 試玩此版本</a>
         </div>
 
