@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>昭和字律：標準盲打指法教學版</title>
+    <title>英打喫茶店：盲打指法教學版 (v2.0)</title>
     <style>
         :root {
             --bg-color: #f4ece1;
@@ -13,7 +13,7 @@
             --card-bg: #fff8f0;
             --container-w: 720px;
 
-            /* 手指顏色定義 */
+            /* 手指專屬顏色 */
             --l-pinky: #ff8a80;
             --l-ring: #ffb74d;
             --l-middle: #ffd54f;
@@ -86,7 +86,7 @@
             text-align: center; outline: none; font-family: monospace;
         }
 
-        /* 帶有手指特徵的 QWERTY 虛擬鍵盤 */
+        /* QWERTY 虛擬鍵盤 */
         .keyboard-container {
             display: flex; flex-direction: column; gap: 4px;
             width: 100%; max-width: 580px; margin: 10px auto 0 auto;
@@ -99,7 +99,7 @@
             background: #fff; transition: all 0.1s;
         }
 
-        /* 各手指專屬色彩標籤 */
+        /* 各手指專屬色彩 */
         .fp-l-pinky { background-color: var(--l-pinky) !important; }
         .fp-l-ring { background-color: var(--l-ring) !important; }
         .fp-l-middle { background-color: var(--l-middle) !important; }
@@ -118,12 +118,12 @@
 </head>
 <body>
 
-    <h1>☕ 昭和字律：標準盲打指法版</h1>
-    <div class="subtitle">Touch Typing Guide — Finger Positioning Practice</div>
+    <h1>☕ 英打喫茶店：盲打指法教學版</h1>
+    <div class="subtitle">Touch Typing Guide — Level Progression & Finger Positioning</div>
 
     <div class="dashboard">
         <div>📍 當前關卡: <span id="stage-name">Stage 1</span></div>
-        <div>🎯 進度: <span id="stage-progress">0/4</span></div>
+        <div>🎯 解鎖進度: <span id="stage-progress">0/10</span></div>
     </div>
 
     <div class="game-container">
@@ -132,7 +132,7 @@
             <button class="stage-btn active" id="btn-s1" onclick="selectStage(1)">Stage 1<br>左手 (a s d f)</button>
             <button class="stage-btn locked" id="btn-s2" onclick="selectStage(2)">Stage 2<br>右手 (j k l ;)</button>
             <button class="stage-btn locked" id="btn-s3" onclick="selectStage(3)">Stage 3<br>基准鍵混合</button>
-            <button class="stage-btn locked" id="btn-s4" onclick="selectStage(4)">Stage 4<br>基准鍵單字</button>
+            <button class="stage-btn locked" id="btn-s4" onclick="selectStage(4)">Stage 4<br>昭和喫茶大師 (20題)</button>
         </div>
 
         <!-- 即時指法提示區 -->
@@ -156,23 +156,86 @@
         // 手指映射表 (Finger Mapping)
         const fingerMap = {
             'a': { name: '左手小指 (Left Pinky)', class: 'fp-l-pinky' },
+            'q': { name: '左手小指 (Left Pinky)', class: 'fp-l-pinky' },
+            'z': { name: '左手小指 (Left Pinky)', class: 'fp-l-pinky' },
             's': { name: '左手無名指 (Left Ring)', class: 'fp-l-ring' },
+            'w': { name: '左手無名指 (Left Ring)', class: 'fp-l-ring' },
+            'x': { name: '左手無名指 (Left Ring)', class: 'fp-l-ring' },
             'd': { name: '左手中指 (Left Middle)', class: 'fp-l-middle' },
+            'e': { name: '左手中指 (Left Middle)', class: 'fp-l-middle' },
+            'c': { name: '左手中指 (Left Middle)', class: 'fp-l-middle' },
             'f': { name: '左手食指 (Left Index)', class: 'fp-l-index' },
             'g': { name: '左手食指 (Left Index)', class: 'fp-l-index' },
+            'r': { name: '左手食指 (Left Index)', class: 'fp-l-index' },
+            't': { name: '左手食指 (Left Index)', class: 'fp-l-index' },
+            'v': { name: '左手食指 (Left Index)', class: 'fp-l-index' },
+            'b': { name: '左手食指 (Left Index)', class: 'fp-l-index' },
             'j': { name: '右手食指 (Right Index)', class: 'fp-r-index' },
             'h': { name: '右手食指 (Right Index)', class: 'fp-r-index' },
+            'u': { name: '右手食指 (Right Index)', class: 'fp-r-index' },
+            'y': { name: '右手食指 (Right Index)', class: 'fp-r-index' },
+            'm': { name: '右手食指 (Right Index)', class: 'fp-r-index' },
+            'n': { name: '右手食指 (Right Index)', class: 'fp-r-index' },
             'k': { name: '右手中指 (Right Middle)', class: 'fp-r-middle' },
+            'i': { name: '右手中指 (Right Middle)', class: 'fp-r-middle' },
             'l': { name: '右手無名指 (Right Ring)', class: 'fp-r-ring' },
-            ';': { name: '右手小指 (Right Pinky)', class: 'fp-r-pinky' }
+            'o': { name: '右手無名指 (Right Ring)', class: 'fp-r-ring' },
+            ';': { name: '右手小指 (Right Pinky)', class: 'fp-r-pinky' },
+            'p': { name: '右手小指 (Right Pinky)', class: 'fp-r-pinky' }
         };
 
-        // 循序漸進關卡內容（由簡單字母到單字）
+        // 關卡與單字庫配置 (通關門檻皆為 10 關)
         const stages = {
-            1: { name: "Stage 1: 左手基准鍵", req: 4, items: ["a f s d", "f a d s", "s d a f", "a s d f"] },
-            2: { name: "Stage 2: 右手基准鍵", req: 4, items: ["j k l ;", "; l k j", "k j ; l", "j l k ;"] },
-            3: { name: "Stage 3: 左右手交替", req: 4, items: ["a j s k", "d l f ;", "f j d k", "a ; s l"] },
-            4: { name: "Stage 4: 基准鍵基礎單字", req: 4, items: ["ask", "dad", "fall", "flask"] }
+            1: { 
+                name: "Stage 1: 左手基准鍵", 
+                req: 10, 
+                items: [
+                    "a f s d", "f a d s", "s d a f", "a s d f", "d f a s",
+                    "f s a d", "s a d f", "d a f s", "a d s f", "f d s a"
+                ] 
+            },
+            2: { 
+                name: "Stage 2: 右手基准鍵", 
+                req: 10, 
+                items: [
+                    "j k l ;", "; l k j", "k j ; l", "j l k ;", "l k j ;",
+                    "; k j l", "k ; l j", "l j k ;", "j ; k l", "; j l k"
+                ] 
+            },
+            3: { 
+                name: "Stage 3: 左右手混合練習", 
+                req: 10, 
+                items: [
+                    "a j s k", "d l f ;", "f j d k", "a ; s l", "j a k s",
+                    "l d ; f", "f ; d l", "s k a j", "ask", "dad"
+                ] 
+            },
+            4: { 
+                name: "Stage 4: 昭和喫茶大師 (20大題目)", 
+                req: 10, 
+                items: [
+                    "melon soda",        // 1
+                    "caramel pudding",  // 2
+                    "iced coffee",      // 3
+                    "hot pancake",      // 4
+                    "strawberry sundae",// 5
+                    "cream soda",       // 6
+                    "egg sandwich",     // 7
+                    "french toast",     // 8
+                    "black tea",        // 9
+                    "matcha latte",     // 10
+                    "ice cream",        // 11
+                    "vinyl record",     // 12
+                    "showa kissaten",   // 13
+                    "city pop music",   // 14
+                    "retro jukebox",    // 15
+                    "typing master",    // 16
+                    "sweet dessert",    // 17
+                    "morning service",  // 18
+                    "coffee beans",     // 19
+                    "plastic love"      // 20
+                ] 
+            }
         };
 
         let currentStage = 1;
@@ -194,7 +257,6 @@
                     k.id = `key-${char === ';' ? 'semicolon' : char}`;
                     k.innerText = char;
                     
-                    // 給予預設手指色彩底色
                     if (fingerMap[char]) {
                         k.classList.add(fingerMap[char].class);
                     }
@@ -226,15 +288,19 @@
             if (!nextChar) return;
 
             const charLower = nextChar.toLowerCase();
-            const fingerInfo = fingerMap[charLower];
+            if (charLower === ' ') {
+                document.getElementById('finger-hint').innerText = "雙手大拇指 (Space 空白鍵)";
+                return;
+            }
 
+            const fingerInfo = fingerMap[charLower];
             if (fingerInfo) {
                 document.getElementById('finger-hint').innerText = fingerInfo.name;
                 const keyId = charLower === ';' ? 'key-semicolon' : `key-${charLower}`;
                 const keyEl = document.getElementById(keyId);
                 if (keyEl) keyEl.classList.add('active');
             } else {
-                document.getElementById('finger-hint').innerText = "按下 Enter 或 空白鍵";
+                document.getElementById('finger-hint').innerText = "按下對應字母按鍵";
             }
         }
 
@@ -249,25 +315,28 @@
                 if (inputVal.length < targetText.length) {
                     updateFingerHint(targetText[inputVal.length]);
                 } else {
-                    // 完成當前小節
+                    // 完成當前題目
                     progress++;
+                    
+                    // 檢查是否達到 10 關解鎖條件
                     if (progress >= stages[currentStage].req && unlockedStage === currentStage && currentStage < 4) {
                         unlockedStage++;
-                        alert(`🎉 恭喜完成 ${stages[currentStage].name}！已解鎖 Stage ${unlockedStage}！`);
+                        alert(`🎉 太棒了！您已成功完成 10 關練習，解鎖 ${stages[unlockedStage].name}！`);
                     }
 
+                    // 循環切換題目
                     currentIndex = (currentIndex + 1) % stages[currentStage].items.length;
                     updateUI();
-                    setTimeout(loadTarget, 500);
+                    setTimeout(loadTarget, 400);
                 }
             } else {
-                document.getElementById('feedback').innerText = "❌ 鍵盤按錯囉！請看下方高亮顏色指示。";
+                document.getElementById('feedback').innerText = "❌ 輸入錯誤，請看下方高亮字母與手指提示。";
             }
         });
 
         function selectStage(s) {
             if (s > unlockedStage) {
-                alert(`🔒 Stage ${s} 尚未解鎖，請先通過前一關。`);
+                alert(`🔒 Stage ${s} 尚未解鎖！請先在 Stage ${currentStage} 累積完成 10 關練習。`);
                 return;
             }
             currentStage = s;
